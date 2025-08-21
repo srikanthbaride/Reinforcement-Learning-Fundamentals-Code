@@ -25,19 +25,6 @@ pip install -r requirements.txt
 python ch2_rl_formulation/value_iteration.py
 ```
 
-## Linking from LaTeX
-
-In your LaTeX preamble:
-```latex
-\usepackage{hyperref}
-\newcommand{\codelink}[2]{\href{#1}{\texttt{#2}}}
-```
-
-In Chapter 2:
-```latex
-\noindent\textbf{Companion Code:}
-\codelink{https://github.com/YourUserName/Reinforcement-Learning-Fundamentals-Code/tree/main/ch2_rl_formulation}{GitHub (Chapter~2 Code)}.
-```
 
 ## License
 
