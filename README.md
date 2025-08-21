@@ -6,7 +6,6 @@ This repository contains runnable Python code accompanying the book **"Reinforce
 
 ## Contents
 
-- `ch1_introduction/` — Toy examples and utilities used in the introduction.
 - `ch2_rl_formulation/` — MDPs, policies, value functions, Bellman equations, policy evaluation, value iteration, grid world.
 - `ch3_multi_armed_bandits/` — ε-greedy, UCB, Thompson Sampling (placeholders here; fill as chapter matures).
 - `utils/` — Shared helpers (random seeds, plotting, gridworld helpers).
