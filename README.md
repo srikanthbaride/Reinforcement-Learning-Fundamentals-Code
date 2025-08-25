@@ -6,9 +6,9 @@ This repository contains runnable Python code accompanying the book **"Reinforce
 
 ## Contents
 
-- `ch2_rl_formulation/` — MDPs, policies, value functions, Bellman equations, policy evaluation, value iteration, grid world.
-- `ch3_multi_armed_bandits/` — ε-greedy, UCB, Thompson Sampling.
-- `utils/` — Shared helpers (random seeds, plotting, gridworld helpers).
+- [`ch2_rl_formulation/`](ch2_rl_formulation/README.md) — MDPs, policies, value functions, Bellman equations, policy evaluation, value iteration, grid world.
+- [`ch3_multi_armed_bandits/`](ch3_multi_armed_bandits/README.md) — ε-greedy, UCB, Thompson Sampling.
+- [`utils/`](utils/) — Shared helpers (random seeds, plotting, gridworld helpers).
 
 ## Quickstart
 
@@ -22,11 +22,11 @@ pip install -r requirements.txt
 
 # 3) Run a Chapter 2 demo (GridWorld Value Iteration)
 python ch2_rl_formulation/value_iteration.py
-```
 
+# 4) Run the Chapter 2 Random MDP demo
+python ch2_rl_formulation/demo_random_mdp.py
 
-
-## License
-
-This project is licensed under the MIT License (see `LICENSE`).
-
+# 5) Run Chapter 3 bandit demos
+python ch3_multi_armed_bandits/epsilon_greedy.py
+python ch3_multi_armed_bandits/ucb.py
+python ch3_multi_armed_bandits/thompson_sampling.py

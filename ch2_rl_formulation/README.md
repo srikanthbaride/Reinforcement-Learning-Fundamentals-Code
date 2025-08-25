@@ -14,5 +14,3 @@ This chapter’s code mirrors the text:
 Run a demo:
 ```bash
 python value_iteration.py
-```
-
