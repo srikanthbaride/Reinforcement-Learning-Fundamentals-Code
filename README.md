@@ -12,18 +12,33 @@ It provides clean, minimal, and well-tested implementations of key reinforcement
 
 ```
 rl-fundamentals-code/
-├─ ch2_rl_formulation/          # Chapter 2: The RL Problem Formulation
-│  ├─ gridworld.py              # 4x4 GridWorld MDP
-│  ├─ evaluation.py             # Policy evaluation, q_from_v
-│  ├─ policies.py               # Greedy & ε-greedy policies
-│  ├─ examples/                 # Numeric examples + GridWorld demo
-│  └─ tests/                    # Pytest-based validation
-├─ ch3_multi_armed_bandits/     # Chapter 3: Multi-Armed Bandits (placeholder)
-│  └─ tests/
-├─ utils/                       # Shared helper utilities
-├─ .github/workflows/           # CI: runs PyTest on every push/PR
-├─ requirements.txt             # Global dependencies
-└─ README.md
+├─ ch2_rl_formulation/              # Chapter 2: The RL Problem Formulation
+│  ├─ gridworld.py                  # 4x4 GridWorld MDP (tabular P,R builder)
+│  ├─ evaluation.py                 # Policy evaluation, q_from_v(), greedy_from_q()
+│  ├─ policies.py                   # Deterministic & ε-greedy policies
+│  ├─ value_iteration.py            # Bellman optimality, value iteration
+│  ├─ examples/                     # Numeric examples, GridWorld demo, plotting
+│  └─ tests/                        # Pytest-based checks for chapter numbers
+│
+├─ ch3_multi_armed_bandits/         # Chapter 3: Multi-Armed Bandits
+│  ├─ bandits.py                    # Bernoulli & Gaussian bandit environments
+│  ├─ epsilon_greedy.py             # Sample-average ε-greedy agent
+│  ├─ ucb.py                        # UCB1 agent (with tunable exploration constant)
+│  ├─ thompson.py                   # Beta–Bernoulli Thompson Sampling agent
+│  ├─ experiments.py                # Run algorithms, generate regret plots
+│  ├─ plots/                        # Saved figures (regret_bernoulli.png, etc.)
+│  └─ tests/                        # Regression tests (ordering, sublinear regret)
+│
+├─ utils/                           # Shared helper utilities (future use)
+│
+├─ .github/workflows/               # CI: runs pytest on every push/PR
+│  └─ python-tests.yml
+│
+├─ requirements.txt                 # Global dependencies (numpy, matplotlib, pytest)
+├─ requirements_ch2.txt             # Chapter 2–specific dependencies
+├─ requirements_ch3.txt             # Chapter 3–specific dependencies
+└─ README.md                        # Project overview + usage
+
 ```
 
 ---
