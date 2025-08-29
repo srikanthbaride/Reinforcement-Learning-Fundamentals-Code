@@ -1,18 +1,5 @@
-# Python
+.venv/
 __pycache__/
 *.pyc
-.venv/
-.env
-.ipynb_checkpoints/
-
-# OS
-.DS_Store
-
-# Packaging / build
-build/
-dist/
-*.egg-info/
-
-# IDE
-.vscode/
 .idea/
+.DS_Store

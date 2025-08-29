@@ -1,6 +1,2 @@
 numpy>=1.24
-<<<<<<< HEAD
-matplotlib>=3.8
-=======
 pytest>=7.0
->>>>>>> 0acb021 (Add Chapter 2 code + CI)
