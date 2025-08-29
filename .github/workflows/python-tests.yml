@@ -1,32 +1,39 @@
+# .github/workflows/python-tests.yml
 name: Python (Chapters)
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main, master ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"]
+        chapter: [ch2_rl_formulation, ch3_bandits]   # add/remove chapters as needed
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
 
-      - name: Install root deps
+      - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          # Root requirements (optional)
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Chapter-specific requirements (if present)
+          if [ -f "${{ matrix.chapter }}/requirements.txt" ]; then \
+            pip install -r "${{ matrix.chapter }}/requirements.txt"; \
+          fi
+          pip install pytest
 
-      - name: Run Chapter 2 tests
-        run: pytest -q ch2_rl_formulation/tests
+      - name: Make repo importable
+        run: echo "PYTHONPATH=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
 
-      - name: Run Chapter 3 tests
-        run: pytest -q ch3_multi_armed_bandits/tests
+      - name: Run ${{ matrix.chapter }} tests
+        run: pytest -q ${{ matrix.chapter }}/tests
