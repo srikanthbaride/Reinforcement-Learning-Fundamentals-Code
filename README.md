@@ -24,8 +24,8 @@ It provides clean, minimal, and well-tested implementations of key reinforcement
 | 2       | The RL Problem Formulation     | ✔️ Complete   | GridWorld, evaluation, policies, examples           |
 | 3       | Multi-Armed Bandits            | ✔️ Complete   | Bandit envs, ε-greedy, UCB, Thompson                |
 | 4       | Dynamic Programming Approaches | ✔️ Complete   | Policy Iteration, Value Iteration                   |
-| 5       | Monte Carlo Methods            | ⏳ In Progress| Prediction, Control, On/Off-Policy done; refining   |
-| 6+      | Temporal-Difference & Beyond   | ❌ Not Yet    | To be implemented in upcoming chapters              |
+| 5       | Monte Carlo Methods            | ✔️ Complete| Prediction, Control, On/Off-Policy done; refining   |
+| 6+      | Temporal-Difference & Beyond   | ⏳ In Progress   | To be implemented in upcoming chapters              |
 
 ---
 
