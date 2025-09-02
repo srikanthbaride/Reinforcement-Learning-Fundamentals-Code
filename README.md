@@ -2,7 +2,6 @@
 
 [![Python (Chapters)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/python-tests.yml)
 
-
 This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Fundamentals: From Theory to Practice*.  
 It provides clean, minimal, and well-tested implementations of key reinforcement learning concepts.
 
@@ -29,6 +28,15 @@ rl-fundamentals-code/
 │  ├─ plots/                        # Saved figures (regret_bernoulli.png, etc.)
 │  └─ tests/                        # Regression tests (ordering, sublinear regret)
 │
+├─ ch4_dynamic_programming/         # Chapter 4: Dynamic Programming Approaches
+│  ├─ gridworld.py                  # 4x4 deterministic GridWorld MDP
+│  ├─ policy_evaluation.py          # Iterative policy evaluation
+│  ├─ policy_iteration.py           # Howard’s policy iteration
+│  ├─ value_iteration.py            # Bellman optimality (value iteration)
+│  ├─ utils.py                      # Uniform random + greedy helpers
+│  ├─ examples/                     # Run PI/VI demos
+│  └─ tests/                        # Pytest checks for DP convergence/optimality
+│
 ├─ utils/                           # Shared helper utilities (future use)
 │
 ├─ .github/workflows/               # CI: runs pytest on every push/PR
@@ -37,8 +45,8 @@ rl-fundamentals-code/
 ├─ requirements.txt                 # Global dependencies (numpy, matplotlib, pytest)
 ├─ requirements_ch2.txt             # Chapter 2–specific dependencies
 ├─ requirements_ch3.txt             # Chapter 3–specific dependencies
+├─ requirements_ch4.txt             # Chapter 4–specific dependencies (optional)
 └─ README.md                        # Project overview + usage
-
 ```
 
 ---
@@ -57,7 +65,7 @@ Set up a virtual environment (recommended):
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Linux/macOS
-.\.venv\Scriptsctivate    # Windows PowerShell
+.\.venv\Scripts\Activate    # Windows PowerShell
 ```
 
 Install dependencies:
@@ -76,10 +84,22 @@ To run all tests:
 python -m pytest -q
 ```
 
-To run only Chapter 2 tests:
+Run only Chapter 2 tests:
 
 ```bash
 python -m pytest -q ch2_rl_formulation/tests
+```
+
+Run only Chapter 3 tests:
+
+```bash
+python -m pytest -q ch3_multi_armed_bandits/tests
+```
+
+Run only Chapter 4 tests:
+
+```bash
+python -m pytest -q ch4_dynamic_programming/tests
 ```
 
 ---
@@ -92,10 +112,22 @@ Run numeric checks for Chapter 2:
 python -m ch2_rl_formulation.examples.numeric_checks
 ```
 
-Run the GridWorld demo:
+Run the GridWorld demo (Chapter 2):
 
 ```bash
 python -m ch2_rl_formulation.examples.gridworld_demo
+```
+
+Run Policy Iteration demo (Chapter 4):
+
+```bash
+python -m ch4_dynamic_programming.examples.run_policy_iteration
+```
+
+Run Value Iteration demo (Chapter 4):
+
+```bash
+python -m ch4_dynamic_programming.examples.run_value_iteration
 ```
 
 ---
