@@ -7,6 +7,15 @@ It provides clean, minimal, and well-tested implementations of key reinforcement
 
 ---
 
+## 📑 Chapter Navigation
+
+- [Chapter 2: The RL Problem Formulation](./ch2_rl_formulation)
+- [Chapter 3: Multi-Armed Bandits](./ch3_multi_armed_bandits)
+- [Chapter 4: Dynamic Programming Approaches](./ch4_dynamic_programming)
+- [Chapter 5: Monte Carlo Methods](./ch5_monte_carlo)
+
+---
+
 ## 📂 Repository Structure
 
 ```
@@ -22,30 +31,35 @@ rl-fundamentals-code/
 ├─ ch3_multi_armed_bandits/         # Chapter 3: Multi-Armed Bandits
 │  ├─ bandits.py                    # Bernoulli & Gaussian bandit environments
 │  ├─ epsilon_greedy.py             # Sample-average ε-greedy agent
-│  ├─ ucb.py                        # UCB1 agent (with tunable exploration constant)
-│  ├─ thompson.py                   # Beta–Bernoulli Thompson Sampling agent
+│  ├─ ucb.py                        # UCB1 agent
+│  ├─ thompson.py                   # Thompson Sampling (Beta–Bernoulli)
 │  ├─ experiments.py                # Run algorithms, generate regret plots
-│  ├─ plots/                        # Saved figures (regret_bernoulli.png, etc.)
+│  ├─ plots/                        # Saved figures
 │  └─ tests/                        # Regression tests (ordering, sublinear regret)
 │
 ├─ ch4_dynamic_programming/         # Chapter 4: Dynamic Programming Approaches
-│  ├─ gridworld.py                  # 4x4 deterministic GridWorld MDP
+│  ├─ gridworld.py                  # 4x4 deterministic GridWorld
 │  ├─ policy_evaluation.py          # Iterative policy evaluation
 │  ├─ policy_iteration.py           # Howard’s policy iteration
 │  ├─ value_iteration.py            # Bellman optimality (value iteration)
-│  ├─ utils.py                      # Uniform random + greedy helpers
+│  ├─ utils.py                      # Random + greedy helpers
 │  ├─ examples/                     # Run PI/VI demos
-│  └─ tests/                        # Pytest checks for DP convergence/optimality
+│  └─ tests/                        # Pytest checks for DP convergence
+│
+├─ ch5_monte_carlo/                 # Chapter 5: Monte Carlo Methods
+│  ├─ examples/
+│  │   ├─ mc_prediction_demo.py           # First-visit vs every-visit MC (two-state MDP)
+│  │   ├─ mc_control_es_gridworld.py      # MC control with Exploring Starts
+│  │   ├─ mc_control_onpolicy_gridworld.py# On-policy MC control with ε-soft policies
+│  │   └─ mc_offpolicy_is_demo.py         # Off-policy IS: ordinary vs weighted
+│  └─ tests/
+│      ├─ test_mc_control.py              # GridWorld control tests (MC-ES & on-policy)
+│      └─ test_offpolicy_is.py            # Off-policy IS variance checks
 │
 ├─ utils/                           # Shared helper utilities (future use)
-│
 ├─ .github/workflows/               # CI: runs pytest on every push/PR
 │  └─ python-tests.yml
-│
-├─ requirements.txt                 # Global dependencies (numpy, matplotlib, pytest)
-├─ requirements_ch2.txt             # Chapter 2–specific dependencies
-├─ requirements_ch3.txt             # Chapter 3–specific dependencies
-├─ requirements_ch4.txt             # Chapter 4–specific dependencies (optional)
+├─ requirements.txt                 # Global dependencies
 └─ README.md                        # Project overview + usage
 ```
 
@@ -102,6 +116,12 @@ Run only Chapter 4 tests:
 python -m pytest -q ch4_dynamic_programming/tests
 ```
 
+Run only Chapter 5 tests:
+
+```bash
+python -m pytest -q ch5_monte_carlo/tests
+```
+
 ---
 
 ## 🧪 Examples
@@ -128,6 +148,30 @@ Run Value Iteration demo (Chapter 4):
 
 ```bash
 python -m ch4_dynamic_programming.examples.run_value_iteration
+```
+
+Run MC prediction demo (Chapter 5):
+
+```bash
+python -m ch5_monte_carlo.examples.mc_prediction_demo
+```
+
+Run MC control with Exploring Starts (Chapter 5):
+
+```bash
+python -m ch5_monte_carlo.examples.mc_control_es_gridworld
+```
+
+Run on-policy MC control with ε-soft policies (Chapter 5):
+
+```bash
+python -m ch5_monte_carlo.examples.mc_control_onpolicy_gridworld
+```
+
+Run off-policy IS demo (Chapter 5):
+
+```bash
+python -m ch5_monte_carlo.examples.mc_offpolicy_is_demo
 ```
 
 ---
