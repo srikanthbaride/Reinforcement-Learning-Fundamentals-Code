@@ -16,6 +16,19 @@ It provides clean, minimal, and well-tested implementations of key reinforcement
 
 ---
 
+## 📊 Chapter Progress
+
+| Chapter | Title                          | Status        | Notes                                               |
+|---------|--------------------------------|---------------|-----------------------------------------------------|
+| 1       | Introduction                   | ✔️ Complete   | Book only (no code needed)                          |
+| 2       | The RL Problem Formulation     | ✔️ Complete   | GridWorld, evaluation, policies, examples           |
+| 3       | Multi-Armed Bandits            | ✔️ Complete   | Bandit envs, ε-greedy, UCB, Thompson                |
+| 4       | Dynamic Programming Approaches | ✔️ Complete   | Policy Iteration, Value Iteration                   |
+| 5       | Monte Carlo Methods            | ⏳ In Progress| Prediction, Control, On/Off-Policy done; refining   |
+| 6+      | Temporal-Difference & Beyond   | ❌ Not Yet    | To be implemented in upcoming chapters              |
+
+---
+
 ## 📂 Repository Structure
 
 ```
@@ -180,6 +193,69 @@ python -m ch5_monte_carlo.examples.mc_offpolicy_is_demo
 
 - GitHub Actions (`.github/workflows/python-tests.yml`) automatically run tests for all chapters on every push and pull request.
 - This ensures correctness and reproducibility of the examples.
+
+---
+
+## 📚 How to Cite
+
+If you use this code or the accompanying book in your research or teaching, please cite:
+
+**Book (forthcoming):**
+```bibtex
+@book{baride2025rlfundamentals,
+  author    = {Srikanth Baride},
+  title     = {Reinforcement Learning Explained},
+  publisher = {yet to decide},
+  year      = {2025},
+  note      = {In preparation}
+}
+```
+
+**Companion Code (GitHub):**
+```bibtex
+@misc{baride2025rlcode,
+  author       = {Srikanth Baride},
+  title        = {Reinforcement Learning Explained — Companion Code},
+  year         = {2025},
+  howpublished = {\url{https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code}},
+  note         = {Accessed: YYYY-MM-DD}
+}
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. **Fork the repository** and create your branch:  
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make your changes**, following the existing folder structure and style:  
+   - Keep chapter code inside its respective `chX_*` folder.  
+   - Use clear function names and docstrings.  
+   - Write minimal, didactic code (prioritize readability over optimization).  
+   - Add tests in the corresponding `tests/` folder.  
+
+3. **Run tests locally** before submitting:  
+   ```bash
+   python -m pytest -q
+   ```
+
+4. **Commit and push** your changes:  
+   ```bash
+   git commit -m "Add feature: description"
+   git push origin feature/your-feature-name
+   ```
+
+5. **Open a Pull Request** on GitHub.  
+
+For issues, please use the GitHub **Issues tab** and provide:  
+- A clear description of the problem.  
+- Steps to reproduce (if it’s a bug).  
+- Suggested fix or clarification request (if possible).  
 
 ---
 
