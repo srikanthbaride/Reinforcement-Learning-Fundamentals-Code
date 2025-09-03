@@ -1,10 +1,27 @@
-﻿# ch5_monte_carlo/examples/mc_control_es_gridworld.py
-import numpy as np
+﻿import numpy as np
 from ch4_dynamic_programming.gridworld import GridWorld4x4
 
-__all__ = ["mc_es_control", "generate_episode_es"]
+__all__ = ["mc_es_control", "generate_episode_es", "ACTIONS"]
 
-ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R,L,D,U (must match ch4 env)
+# Must match env's action ordering
+ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U
+
+def _is_terminal(env: GridWorld4x4, s) -> bool:
+    """Robust terminal check even if env.is_terminal is absent."""
+    if hasattr(env, "is_terminal"):
+        return bool(env.is_terminal(s))
+    st = s if isinstance(s, tuple) else env.i2s[int(s)]
+    return st == env.goal
+
+def _step(env: GridWorld4x4, s, a):
+    """Use env.step if present; otherwise use P/R (deterministic)."""
+    if hasattr(env, "step"):
+        return env.step(s, a)
+    s_idx = env.s2i[s] if isinstance(s, tuple) else int(s)
+    probs = env.P[s_idx, a]
+    sp_idx = int(np.argmax(probs))
+    r = float(env.R[s_idx, a, sp_idx])
+    return env.i2s[sp_idx], r
 
 def _greedy_action(q_row: np.ndarray) -> int:
     return int(np.argmax(q_row))
@@ -12,26 +29,25 @@ def _greedy_action(q_row: np.ndarray) -> int:
 def generate_episode_es(env: GridWorld4x4, Q: np.ndarray, gamma: float, max_steps: int = 10000):
     """
     Exploring starts: start from a random non-terminal state and random action,
-    then follow greedy policy w.r.t. Q thereafter. Returns (states, actions, returns).
+    then follow greedy policy thereafter. Returns (states, actions, returns).
     """
     rng = np.random.default_rng()
-    non_terminal = [s for s in env.S if not env.is_terminal(s)]
+    non_terminal = [s for s in env.S if not _is_terminal(env, s)]
     s = non_terminal[rng.integers(len(non_terminal))]
     a = int(rng.integers(len(env.A)))
 
     states = [s]
     actions = [a]
-    rewards = [0.0]  # so rewards[t+1] aligns with action taken at t
+    rewards = [0.0]  # so rewards[t+1] aligns with action at t
 
     steps = 0
-    while not env.is_terminal(s) and steps < max_steps:
-        sp, r = env.step(s, a)
+    while not _is_terminal(env, s) and steps < max_steps:
+        sp, r = _step(env, s, a)
         rewards.append(float(r))
         s = sp
-        if env.is_terminal(s):
+        if _is_terminal(env, s):
             break
-        s_idx = env.s2i[s]
-        a = _greedy_action(Q[s_idx])
+        a = _greedy_action(Q[env.s2i[s]])
         states.append(s)
         actions.append(a)
         steps += 1
@@ -67,7 +83,7 @@ def mc_es_control(env: GridWorld4x4, episodes: int = 1500, gamma: float | None =
             s_idx = env.s2i[s]
             key = (s_idx, a)
             if key in seen:
-                continue  # first-visit MC
+                continue
             seen.add(key)
             G = returns[t]
             N[s_idx, a] += 1.0
@@ -77,11 +93,3 @@ def mc_es_control(env: GridWorld4x4, episodes: int = 1500, gamma: float | None =
     pi = np.zeros((S, A), dtype=float)
     pi[np.arange(S), np.argmax(Q, axis=1)] = 1.0
     return Q, pi
-
-# Optional: run this file directly for a quick check
-if __name__ == "__main__":
-    env = GridWorld4x4(step_reward=-1.0, goal=(0, 3), gamma=1.0)
-    Q, pi = mc_es_control(env, episodes=2000, seed=0)
-    start = env.s2i[(0, 0)]
-    print("Q(start):", Q[start])
-    print("Greedy action at start:", int(np.argmax(pi[start])))
