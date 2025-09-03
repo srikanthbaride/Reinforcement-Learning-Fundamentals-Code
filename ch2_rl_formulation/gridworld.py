@@ -1,6 +1,4 @@
-﻿# ch2_rl_formulation/gridworld.py
-
-import numpy as np
+﻿import numpy as np
 
 ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U
 
@@ -15,10 +13,20 @@ class GridWorld4x4:
         self.i2s = {k: s for s, k in self.s2i.items()}
         self.A = list(range(len(ACTIONS)))
 
-        # P[s][a] = list of (prob, s', r, done)
+        # Transition kernel: P[s][a] = [(prob, s_next, reward, done)]
         self.P = {s: {a: [] for a in self.A} for s in self.S}
         self._build_PR()
 
+    # --- compatibility helpers expected by tests ---
+    @property
+    def num_states(self) -> int:
+        return len(self.S)
+
+    @property
+    def num_actions(self) -> int:
+        return len(self.A)
+
+    # ---------------- internal helpers ----------------
     def _in_bounds(self, i, j):
         return 0 <= i < self.n and 0 <= j < self.n
 
@@ -27,22 +35,18 @@ class GridWorld4x4:
         i, j = s
         ni, nj = i + di, j + dj
         if not self._in_bounds(ni, nj):
-            # Hitting the boundary keeps you in place
-            return (i, j)
+            return (i, j)  # bump: stay in place
         return (ni, nj)
 
     def _build_PR(self):
         """
-        Textbook convention:
-        - Every attempted move costs step_reward (e.g., -1), INCLUDING the final
-          move that ENTERS the goal.
-        - The goal is absorbing: once at goal, any action yields (goal, 0, done=True).
+        Convention:
+        - Every attempted move costs step_reward (e.g., -1), INCLUDING the final move into goal.
+        - Goal is absorbing: once there, any action yields (goal, 0, done=True).
         """
         goal = self.goal
-
         for s in self.S:
             if s == goal:
-                # Absorbing terminal: staying has zero reward; no further step costs here.
                 for a in self.A:
                     self.P[s][a] = [(1.0, goal, 0.0, True)]
                 continue
@@ -50,15 +54,11 @@ class GridWorld4x4:
             for a in self.A:
                 s_next = self._next_state(s, a)
                 done = (s_next == goal)
-
-                # IMPORTANT: charge step cost for the transition, even if it enters terminal
-                reward = self.step_reward
-
+                reward = self.step_reward  # charge cost even on final transition
                 self.P[s][a] = [(1.0, s_next, reward, done)]
 
-    # Optional helper if you simulate step-by-step
+    # Optional simulator
     def step(self, s, a):
-        """ Stochastic step following P; returns (s_next, reward, done). """
         trans = self.P[s][a]
         probs = [p for p, _, _, _ in trans]
         idx = np.random.choice(len(trans), p=probs)
