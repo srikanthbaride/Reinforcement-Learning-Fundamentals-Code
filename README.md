@@ -1,6 +1,13 @@
 # Reinforcement Learning Fundamentals — Companion Code
 
-[![Python (Chapters)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/python-tests.yml)
+# Reinforcement Learning Fundamentals — Companion Code
+
+## Build Status
+
+[![ch2 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml)
+[![ch3 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml)
+[![ch4 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml)
+[![ch5 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml)
 
 This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Fundamentals: From Theory to Practice*.  
 It provides clean, minimal, and well-tested implementations of key reinforcement learning concepts.
