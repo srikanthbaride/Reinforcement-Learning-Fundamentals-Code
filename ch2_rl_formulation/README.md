@@ -1,6 +1,6 @@
-# Chapter 2 — The RL Problem Formulation
+﻿# Chapter 2 â€” The RL Problem Formulation
 
-Implements: MDP formalism, Bellman expectation & optimality, gridworld, greedy/ε-greedy, value iteration.
+Implements: MDP formalism, Bellman expectation & optimality, gridworld, greedy/Îµ-greedy, value iteration.
 Includes numeric examples (5.23 and 4.58), demos, visualizations, and tests.
 
 ## Quickstart
@@ -11,10 +11,11 @@ python -m ch2_rl_formulation.examples.plot_value_and_policy
 ```
 
 ## Layout
-- `gridworld.py` — 4×4 deterministic GridWorld.
-- `evaluation.py` — policy evaluation (deterministic & stochastic), `q_from_v`, `greedy_from_q`.
-- `policies.py` — deterministic & ε-greedy helpers.
-- `value_iteration.py` — value iteration, extract greedy policy.
-- `visualize.py` — single-plot, matplotlib-based visuals (no explicit colors).
-- `examples/` — boxed examples and demos.
-- `tests/` — sanity checks tied to the chapter.
+- `gridworld.py` â€” 4Ã—4 deterministic GridWorld.
+- `evaluation.py` â€” policy evaluation (deterministic & stochastic), `q_from_v`, `greedy_from_q`.
+- `policies.py` â€” deterministic & Îµ-greedy helpers.
+- `value_iteration.py` â€” value iteration, extract greedy policy.
+- `visualize.py` â€” single-plot, matplotlib-based visuals (no explicit colors).
+- `examples/` â€” boxed examples and demos.
+- `tests/` â€” sanity checks tied to the chapter.
+

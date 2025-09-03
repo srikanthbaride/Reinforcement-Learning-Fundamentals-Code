@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import numpy as np
 
 def value_iteration(P: np.ndarray, R: np.ndarray, gamma: float = 1.0, theta: float = 1e-8,
@@ -24,3 +24,4 @@ def value_iteration(P: np.ndarray, R: np.ndarray, gamma: float = 1.0, theta: flo
         a_star = int(np.argmax(q_vals))
         pi[s, a_star] = 1.0
     return pi, V, sweeps
+

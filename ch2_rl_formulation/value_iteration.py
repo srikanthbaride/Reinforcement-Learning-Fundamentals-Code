@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import numpy as np
 from .gridworld import GridWorld4x4
 
@@ -33,4 +33,5 @@ if __name__ == "__main__":
     env = GridWorld4x4(step_reward=-1.0, goal=(0, 3))
     V, pi = value_iteration(env, gamma=0.9)
     print("Optimal V(s):\n", np.round(V.reshape(4, 4), 2))
-    print("Greedy π(s):\n", pi.reshape(4, 4))
+    print("Greedy Ï€(s):\n", pi.reshape(4, 4))
+

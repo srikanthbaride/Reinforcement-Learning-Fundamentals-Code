@@ -1,4 +1,4 @@
-name: ch2 tests
+﻿name: ch2 tests
 
 on:
   push:
@@ -19,3 +19,4 @@ jobs:
     uses: ./.github/workflows/_chapter-tests.yml
     with:
       chapter: ch2_rl_formulation
+

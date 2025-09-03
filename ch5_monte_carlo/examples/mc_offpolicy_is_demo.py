@@ -1,4 +1,4 @@
-# ch5_monte_carlo/examples/mc_offpolicy_is_demo.py
+﻿# ch5_monte_carlo/examples/mc_offpolicy_is_demo.py
 """
 Toy off-policy Monte Carlo evaluation with ordinary vs weighted IS.
 
@@ -81,3 +81,4 @@ if __name__ == "__main__":
         f"OIS mean={stats['ois_mean']:.4f}, var={stats['ois_var']:.5f} | "
         f"WIS mean={stats['wis_mean']:.4f}, var={stats['wis_var']:.5f} | True={stats['true_v']:.4f}"
     )
+

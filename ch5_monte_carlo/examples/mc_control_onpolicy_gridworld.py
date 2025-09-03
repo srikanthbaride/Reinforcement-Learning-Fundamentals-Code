@@ -1,4 +1,4 @@
-# ch5_monte_carlo/examples/mc_control_onpolicy_gridworld.py
+﻿# ch5_monte_carlo/examples/mc_control_onpolicy_gridworld.py
 
 import numpy as np
 from collections import defaultdict
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     Q, pi = mc_control_onpolicy(env, episodes=3000, gamma=0.9, epsilon=0.1)
 
     # Print learned greedy policy (arrows)
-    arrows = {0: "→", 1: "←", 2: "↓", 3: "↑"}
+    arrows = {0: "â†’", 1: "â†", 2: "â†“", 3: "â†‘"}
     for i in range(env.n):
         row = []
         for j in range(env.n):
@@ -77,3 +77,4 @@ if __name__ == "__main__":
                 best_a = max(ACTIONS, key=lambda a: pi[(s, a)])
                 row.append(f" {arrows[best_a]} ")
         print("".join(row))
+

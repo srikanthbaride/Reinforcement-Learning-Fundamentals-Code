@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Tuple, List
 import numpy as np
@@ -54,3 +54,4 @@ class GridWorld4x4:
                 sp, r = self._step_det(s, a)
                 P[s][a] = [Transition(s=s, a=a, sp=sp, r=r, p=1.0)]
         return P
+

@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from ch4_dynamic_programming.gridworld import GridWorld4x4
 from ch4_dynamic_programming.policy_iteration import policy_iteration
 from ch4_dynamic_programming.value_iteration import value_iteration
@@ -31,3 +31,4 @@ def test_value_iteration_matches_policy_iteration_value():
 
     assert np.allclose(V_vi, V_pi, atol=1e-8)
     assert np.array_equal(np.argmax(pi_vi, axis=1), np.argmax(pi_pi, axis=1))
+

@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from ..gridworld import GridWorld4x4
 from ..evaluation import policy_evaluation, q_from_v, greedy_from_q
 
@@ -31,3 +31,4 @@ if __name__ == "__main__":
     print(np.array_str(np.round(V, 0), precision=0))
     print("\nGreedy-from-Q policy indices (0:R,1:L,2:D,3:U):")
     print(pi_g)
+

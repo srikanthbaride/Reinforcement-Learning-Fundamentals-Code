@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from ch2_rl_formulation.gridworld import GridWorld4x4
 from ch2_rl_formulation.evaluation import policy_evaluation_stochastic
 
@@ -11,3 +11,4 @@ def test_expectation_equation_under_uniform_policy():
     top_right_neighbor = env.s2i[(0,2)]
     bottom_left = env.s2i[(3,0)]
     assert V[top_right_neighbor] > V[bottom_left]
+

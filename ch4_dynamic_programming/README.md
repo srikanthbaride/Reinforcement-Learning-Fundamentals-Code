@@ -1,11 +1,11 @@
-# Chapter 4 — Dynamic Programming (DP)
+﻿# Chapter 4 â€” Dynamic Programming (DP)
 
 This folder contains minimal, well-tested NumPy implementations of the core DP algorithms:
 - **Iterative Policy Evaluation**
 - **Policy Iteration** (Howard, 1960)
 - **Value Iteration** (Bellman optimality)
 
-**Environment:** a deterministic 4×4 GridWorld with an absorbing terminal goal at the top-right.
+**Environment:** a deterministic 4Ã—4 GridWorld with an absorbing terminal goal at the top-right.
 
 ## Run examples
 
@@ -24,16 +24,17 @@ python -m pytest -q ch4_dynamic_programming/tests
 
 ```
 ch4_dynamic_programming/
-├── __init__.py
-├── gridworld.py
-├── policy_evaluation.py
-├── policy_iteration.py
-├── value_iteration.py
-├── utils.py
-├── examples/
-│   ├── run_policy_iteration.py
-│   └── run_value_iteration.py
-└── tests/
-    ├── test_policy_evaluation.py
-    └── test_policy_and_value_iteration.py
+â”œâ”€â”€ __init__.py
+â”œâ”€â”€ gridworld.py
+â”œâ”€â”€ policy_evaluation.py
+â”œâ”€â”€ policy_iteration.py
+â”œâ”€â”€ value_iteration.py
+â”œâ”€â”€ utils.py
+â”œâ”€â”€ examples/
+â”‚   â”œâ”€â”€ run_policy_iteration.py
+â”‚   â””â”€â”€ run_value_iteration.py
+â””â”€â”€ tests/
+    â”œâ”€â”€ test_policy_evaluation.py
+    â””â”€â”€ test_policy_and_value_iteration.py
 ```
+

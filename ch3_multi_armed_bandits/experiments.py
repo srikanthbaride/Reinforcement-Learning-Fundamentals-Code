@@ -1,4 +1,4 @@
-import argparse, os, numpy as np, matplotlib.pyplot as plt
+﻿import argparse, os, numpy as np, matplotlib.pyplot as plt
 from .epsilon_greedy import run as run_eps
 from .ucb import run as run_ucb
 from .thompson import run as run_ts
@@ -39,6 +39,7 @@ def main():
     true_means = make_true_means(a.K, np.random.default_rng(a.seed))
     xs = np.arange(1, a.T+1)
     reg = run_all(true_means,a.T,a.trials,a.eps,a.c,a.seed)
-    plot(xs,[("ε-Greedy",reg["eps"]),("UCB1",reg["ucb"]),("Thompson",reg["ts"])],
+    plot(xs,[("Îµ-Greedy",reg["eps"]),("UCB1",reg["ucb"]),("Thompson",reg["ts"])],
          "Cumulative Regret","Regret vs Time",os.path.join(a.outdir,"regret.png"))
 if __name__=="__main__": main()
+

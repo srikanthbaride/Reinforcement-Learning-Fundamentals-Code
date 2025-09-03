@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 from dataclasses import dataclass
 from typing import Tuple, List
 import numpy as np
@@ -51,3 +51,4 @@ class GridWorld4x4:
         r, c = self.i2s[s_idx]
         gr, gc = self.goal
         return abs(r - gr) + abs(c - gc)
+

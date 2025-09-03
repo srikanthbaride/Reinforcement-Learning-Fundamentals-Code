@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable, Optional
 import numpy as np
@@ -30,3 +30,4 @@ def regret_from_choices(true_means: np.ndarray, choices: np.ndarray, rewards: np
 
 def ensure_rng(seed: Optional[int]) -> np.random.Generator:
     return np.random.default_rng(seed)
+

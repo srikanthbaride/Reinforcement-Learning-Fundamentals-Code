@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 from typing import Optional, Dict, Any
 import numpy as np
 from .bandits import BernoulliBandit, regret_from_choices, ensure_rng
@@ -24,3 +24,4 @@ def run(true_means, epsilon: float, steps: int, seed: Optional[int] = None) -> D
         "rewards": rewards, "choices": choices, "Q": Q, "N": N,
         "cum_regret": regret_from_choices(np.asarray(true_means, float), choices, rewards),
     }
+

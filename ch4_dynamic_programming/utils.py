@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import numpy as np
 
 def uniform_random_policy(nS: int, nA: int) -> np.ndarray:
@@ -17,3 +17,4 @@ def greedy_policy_from_V(P: np.ndarray, R: np.ndarray, V: np.ndarray, gamma: flo
 def best_action(P: np.ndarray, R: np.ndarray, V: np.ndarray, s: int, gamma: float) -> int:
     q = [np.sum(P[s, a] * (R[s, a] + gamma * V)) for a in range(P.shape[1])]
     return int(np.argmax(q))
+

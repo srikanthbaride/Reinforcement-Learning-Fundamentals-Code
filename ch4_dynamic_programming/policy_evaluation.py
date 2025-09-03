@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import numpy as np
 
 def policy_evaluation(P: np.ndarray, R: np.ndarray, pi: np.ndarray,
@@ -20,3 +20,4 @@ def policy_evaluation(P: np.ndarray, R: np.ndarray, pi: np.ndarray,
         if delta < theta:
             break
     return V
+

@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from ch4_dynamic_programming.gridworld import GridWorld4x4
 from ch4_dynamic_programming.policy_evaluation import policy_evaluation
 from ch4_dynamic_programming.utils import uniform_random_policy
@@ -19,3 +19,4 @@ def test_policy_evaluation_converges_uniform():
         near = V[distances == d].max()
         far  = V[distances == d + 1].min()
         assert near >= far  # higher (less negative) when closer to goal
+

@@ -1,4 +1,4 @@
-# ch5_monte_carlo/tests/test_offpolicy_is.py
+﻿# ch5_monte_carlo/tests/test_offpolicy_is.py
 import numpy as np
 from ch5_monte_carlo.examples.mc_offpolicy_is_demo import (
     TRUE_V, offpolicy_mc, monte_carlo_stats
@@ -28,3 +28,4 @@ def test_wis_variance_lower_than_ois_variance():
     # Means should be reasonably close to the true value in aggregate
     assert abs(stats["ois_mean"] - TRUE_V) < 0.04
     assert abs(stats["wis_mean"] - TRUE_V) < 0.04
+

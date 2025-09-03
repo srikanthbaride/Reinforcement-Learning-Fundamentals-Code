@@ -1,4 +1,4 @@
-# ch5_monte_carlo/examples/mc_control_es_gridworld.py
+﻿# ch5_monte_carlo/examples/mc_control_es_gridworld.py
 import numpy as np
 from collections import defaultdict
 from ch2_rl_formulation.gridworld import GridWorld4x4  # your existing env
@@ -64,10 +64,11 @@ if __name__ == "__main__":
     env = GridWorld4x4(step_reward=0.0, goal=(0, 3))
     Q, pi = mc_es_control(env, episodes=3000, gamma=0.9)
     # print a small slice of the learned greedy policy arrows
-    arrows = {0: "→", 1: "←", 2: "↓", 3: "↑"}
+    arrows = {0: "â†’", 1: "â†", 2: "â†“", 3: "â†‘"}
     for i in range(env.n):
         row = []
         for j in range(env.n):
             s = (i, j)
             row.append(" G " if s == env.goal else f" {arrows[pi[s]]} ")
         print("".join(row))
+

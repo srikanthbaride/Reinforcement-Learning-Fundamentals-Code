@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 import numpy as np
 from .gridworld import GridWorld4x4
 
@@ -52,3 +52,4 @@ def q_from_v(env: GridWorld4x4, V: np.ndarray, gamma: float = 0.9) -> np.ndarray
 
 def greedy_from_q(Q: np.ndarray) -> np.ndarray:
     return np.argmax(Q, axis=1)
+

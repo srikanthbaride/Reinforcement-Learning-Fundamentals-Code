@@ -1,6 +1,6 @@
-# Chapter 3 — Multi-Armed Bandits
+﻿# Chapter 3 â€” Multi-Armed Bandits
 
-Implements ε-Greedy, UCB1, and Thompson Sampling on Bernoulli bandits.
+Implements Îµ-Greedy, UCB1, and Thompson Sampling on Bernoulli bandits.
 
 ## Run experiments
 ```bash
@@ -18,3 +18,4 @@ See `examples/` for scripts reproducing the numerical examples:
 ```bash
 pytest -q ch3_multi_armed_bandits/tests
 ```
+

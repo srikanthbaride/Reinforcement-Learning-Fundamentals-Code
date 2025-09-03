@@ -1,4 +1,4 @@
-name: _chapter-tests
+﻿name: _chapter-tests
 
 on:
   workflow_call:
@@ -53,3 +53,4 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -q ${{ inputs.chapter }}/tests
+

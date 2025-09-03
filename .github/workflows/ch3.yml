@@ -1,4 +1,4 @@
-name: ch3 tests
+﻿name: ch3 tests
 
 on:
   push:
@@ -19,3 +19,4 @@ jobs:
     uses: ./.github/workflows/_chapter-tests.yml
     with:
       chapter: ch3_multi_armed_bandits
+

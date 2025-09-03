@@ -1,4 +1,4 @@
-from ch2_rl_formulation.examples.numeric_checks import (
+﻿from ch2_rl_formulation.examples.numeric_checks import (
     discounted_return_example, state_value_example, gridworld_vq_under_fixed_policy
 )
 
@@ -13,3 +13,4 @@ def test_gridworld_values_match_distance_gamma1():
     expected = {(3,0):-6, (2,2):-3, (0,2):-1, (0,3):0}
     for (i,j), val in expected.items():
         assert int(round(V[i, j])) == val
+
