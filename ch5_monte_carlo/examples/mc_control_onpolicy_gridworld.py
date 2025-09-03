@@ -1,6 +1,5 @@
 ﻿# ch5_monte_carlo/examples/mc_control_onpolicy_gridworld.py
-# On-policy Monte Carlo control with ε-greedy behavior/target policy (no ES).
-# Returns an ε-soft policy as a dict keyed by (state_tuple, action_tuple), as required by tests.
+# On-policy MC control with ε-greedy behavior/target; returns an ε-soft dict policy.
 
 from __future__ import annotations
 import numpy as np
@@ -9,16 +8,9 @@ __all__ = ["mc_control_onpolicy", "ACTIONS", "generate_episode_onpolicy"]
 
 ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
 
-# ------------ robust helpers (no dependence on env.P or env.is_terminal) ------------
-
-def _goal(env):
-    return getattr(env, "goal", (0, 3))
-
-def _n(env):
-    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
-
-def _step_reward(env):
-    return float(getattr(env, "step_reward", -1.0))
+def _goal(env): return getattr(env, "goal", (0, 3))
+def _n(env):    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
+def _step_reward(env): return float(getattr(env, "step_reward", -1.0))
 
 def _is_terminal(env, s) -> bool:
     if hasattr(env, "is_terminal"):
@@ -43,11 +35,8 @@ def _step(env, s, a):
 def _epsilon_greedy(q_row: np.ndarray, epsilon: float, rng: np.random.Generator) -> int:
     return int(rng.integers(len(q_row))) if rng.random() < epsilon else int(np.argmax(q_row))
 
-# ---------------------------------- core --------------------------------------
-
 def generate_episode_onpolicy(env, Q: np.ndarray, epsilon: float,
                               rng: np.random.Generator, max_steps: int = 10_000):
-    """Start from a random non-terminal state; follow ε-greedy w.r.t. Q."""
     non_terminal = [s for s in env.S if not _is_terminal(env, s)]
     s = non_terminal[rng.integers(len(non_terminal))]
 
@@ -62,7 +51,6 @@ def generate_episode_onpolicy(env, Q: np.ndarray, epsilon: float,
         states.append(s)
         steps += 1
 
-    # returns over number of actions
     gamma = float(getattr(env, "gamma", 1.0))
     T = len(actions)
     G = 0.0
@@ -76,10 +64,10 @@ def mc_control_onpolicy(env, episodes: int = 5000,
                         epsilon: float = 0.1, gamma: float | None = None,
                         seed: int | None = None):
     """
-    On-policy MC control using ε-greedy behavior = target policy (ε-soft).
     Returns:
-        Q:        (S,A) action-value table
-        pi_soft:  dict mapping (state_tuple, action_tuple) -> probability
+      Q: (S,A)
+      pi_soft: dict mapping (state_tuple, action_tuple) -> probability
+               (ε-soft, so tests can do pi_soft[(s, a_tup)])
     """
     rng = np.random.default_rng(seed)
     S, A = len(env.S), len(env.A)
@@ -100,10 +88,9 @@ def mc_control_onpolicy(env, episodes: int = 5000,
             seen.add(key)
             G = returns[t]
             N[s_idx, a] += 1.0
-            alpha = 1.0 / N[s_idx, a]
-            Q[s_idx, a] += alpha * (G - Q[s_idx, a])
+            Q[s_idx, a] += (G - Q[s_idx, a]) / N[s_idx, a]
 
-    # Build ε-soft policy as a dict keyed by (state_tuple, action_tuple)
+    # Build ε-soft dict policy keyed by (state_tuple, action_tuple)
     pi_soft = {}
     for s_idx, s in enumerate(env.S):
         a_star = int(np.argmax(Q[s_idx]))
