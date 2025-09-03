@@ -1,20 +1,26 @@
 from __future__ import annotations
+from typing import Optional, Dict, Any
 import numpy as np
+from .bandits import BernoulliBandit, regret_from_choices, ensure_rng
 
-class EpsilonGreedy:
-    def __init__(self, K: int, epsilon: float = 0.1, rng: np.random.Generator | None = None):
-        self.K = K
-        self.epsilon = float(epsilon)
-        self.rng = rng or np.random.default_rng()
-        self.counts = np.zeros(K, dtype=int)
-        self.values = np.zeros(K, dtype=float)
-
-    def select_arm(self) -> int:
-        if self.rng.random() < self.epsilon:
-            return int(self.rng.integers(self.K))
-        return int(np.argmax(self.values))
-
-    def update(self, arm: int, reward: float):
-        self.counts[arm] += 1
-        n = self.counts[arm]
-        self.values[arm] += (reward - self.values[arm]) / n
+def run(true_means, epsilon: float, steps: int, seed: Optional[int] = None) -> Dict[str, Any]:
+    if not (0 <= float(epsilon) <= 1):
+        raise ValueError("epsilon must be in [0,1].")
+    K = len(true_means)
+    env = BernoulliBandit(true_means, seed=seed)
+    rng = ensure_rng(seed)
+    Q, N = np.zeros(K), np.zeros(K, dtype=int)
+    choices, rewards = np.zeros(steps, int), np.zeros(steps, float)
+    for t in range(steps):
+        if rng.random() < epsilon:
+            a = rng.integers(0, K)
+        else:
+            a = int(np.argmax(Q))
+        r = env.step(a)
+        N[a] += 1
+        Q[a] += (r - Q[a]) / N[a]
+        choices[t], rewards[t] = a, r
+    return {
+        "rewards": rewards, "choices": choices, "Q": Q, "N": N,
+        "cum_regret": regret_from_choices(np.asarray(true_means, float), choices, rewards),
+    }

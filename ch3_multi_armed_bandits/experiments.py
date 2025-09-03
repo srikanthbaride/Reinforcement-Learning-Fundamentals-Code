@@ -1,70 +1,44 @@
-from __future__ import annotations
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from .bandits import BernoulliBandit
-from .epsilon_greedy import EpsilonGreedy
-from .ucb import UCB1
-from .thompson import ThompsonSamplingBernoulli
+import argparse, os, numpy as np, matplotlib.pyplot as plt
+from .epsilon_greedy import run as run_eps
+from .ucb import run as run_ucb
+from .thompson import run as run_ts
 
-def run_algorithm(env, algo, T: int, seed: int) -> dict:
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument("--K", type=int, default=10)
+    p.add_argument("--T", type=int, default=5000)
+    p.add_argument("--trials", type=int, default=50)
+    p.add_argument("--eps", type=float, default=0.1)
+    p.add_argument("--c", type=float, default=1.0)
+    p.add_argument("--seed", type=int, default=123)
+    p.add_argument("--outdir", type=str, default="ch3_multi_armed_bandits/plots")
+    return p.parse_args()
+
+def make_true_means(K, rng): return rng.uniform(0.1, 0.9, size=K)
+
+def run_all(true_means, T, trials, eps, c, seed):
     rng = np.random.default_rng(seed)
-    rewards = np.zeros(T, dtype=float)
-    regret = np.zeros(T, dtype=float)
-    for t in range(T):
-        a = algo.select_arm()
-        r = env.pull(a, rng)
-        algo.update(a, r)
-        rewards[t] = r
-        regret[t] = env.pseudo_regret(a)
-    return {
-        "rewards": rewards,
-        "cum_rewards": np.cumsum(rewards),
-        "regret": regret,
-        "cum_regret": np.cumsum(regret),
-    }
+    avg_regret = {"eps": np.zeros(T), "ucb": np.zeros(T), "ts": np.zeros(T)}
+    for _ in range(trials):
+        s = int(rng.integers(0, 2**31-1))
+        avg_regret["eps"] += run_eps(true_means, eps, T, s)["cum_regret"]
+        avg_regret["ucb"] += run_ucb(true_means, c, T, s)["cum_regret"]
+        avg_regret["ts"]  += run_ts(true_means, T, s)["cum_regret"]
+    for k in avg_regret: avg_regret[k] /= trials
+    return avg_regret
 
-def average_over_runs(env, algo_ctor, T: int, n_runs: int, base_seed: int = 0) -> dict:
-    cum_regrets = []
-    for run in range(n_runs):
-        algo = algo_ctor()
-        result = run_algorithm(env, algo, T, seed=base_seed + run)
-        cum_regrets.append(result["cum_regret"])
-    cum_regrets = np.array(cum_regrets)
-    mean = cum_regrets.mean(axis=0)
-    se = cum_regrets.std(axis=0, ddof=1) / np.sqrt(n_runs)
-    return {"mean": mean, "se": se}
-
-def plot_regret(curves: dict, title: str, fname: str | None):
-    fig, ax = plt.subplots()
-    for label, stats in curves.items():
-        ax.plot(stats["mean"], label=label)
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Average cumulative pseudo-regret")
-    ax.set_title(title)
-    ax.legend()
-    if fname:
-        out_dir = os.path.dirname(fname)
-        if out_dir and not os.path.exists(out_dir):
-            os.makedirs(out_dir, exist_ok=True)
-        fig.savefig(fname, bbox_inches="tight")
-    else:
-        plt.show()
+def plot(xs, series, ylabel, title, outpath):
+    plt.figure()
+    for label,y in series: plt.plot(xs,y,label=label)
+    plt.xlabel("Time"); plt.ylabel(ylabel); plt.title(title); plt.legend()
+    os.makedirs(os.path.dirname(outpath), exist_ok=True)
+    plt.savefig(outpath, dpi=300); plt.close()
 
 def main():
-    probs = np.array([0.2, 0.25, 0.3, 0.35, 0.5])
-    env = BernoulliBandit(probs=probs)
-    T = 2000
-    n_runs = 200
-    curves = {}
-    curves["ε-greedy(0.10)"] = average_over_runs(env, lambda: EpsilonGreedy(env.K, 0.10), T, n_runs, 123)
-    curves["ε-greedy(0.01)"] = average_over_runs(env, lambda: EpsilonGreedy(env.K, 0.01), T, n_runs, 223)
-    curves["UCB1(c=0.5)"] = average_over_runs(env, lambda: UCB1(env.K, c=0.5), T, n_runs, 323)
-    curves["Thompson (Beta-Bernoulli)"] = average_over_runs(env, lambda: ThompsonSamplingBernoulli(env.K), T, n_runs, 423)
-    here = os.path.dirname(__file__)
-    out_path = os.path.join(here, "plots", "regret_bernoulli.png")
-    plot_regret(curves, "Multi-Armed Bandits: Average Cumulative Pseudo-Regret", out_path)
-    print(f"Saved plot to {out_path}")
-
-if __name__ == "__main__":
-    main()
+    a = parse_args()
+    true_means = make_true_means(a.K, np.random.default_rng(a.seed))
+    xs = np.arange(1, a.T+1)
+    reg = run_all(true_means,a.T,a.trials,a.eps,a.c,a.seed)
+    plot(xs,[("ε-Greedy",reg["eps"]),("UCB1",reg["ucb"]),("Thompson",reg["ts"])],
+         "Cumulative Regret","Regret vs Time",os.path.join(a.outdir,"regret.png"))
+if __name__=="__main__": main()
