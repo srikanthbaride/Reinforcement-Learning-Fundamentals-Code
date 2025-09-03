@@ -1,10 +1,10 @@
 # Reinforcement Learning Explained — Companion Code
 
 ## Build Status
-[![ch2](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml)
-[![ch3](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml)
-[![ch4](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml)
-[![ch5](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml)
+[![ch2](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch2.yml)
+[![ch3](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch3.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch3.yml)
+[![ch4](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch4.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch4.yml)
+[![ch5](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch5.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch5.yml)
 
 ---
 
