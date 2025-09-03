@@ -1,0 +1,21 @@
+name: ch2 tests
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "ch2_rl_formulation/**"
+      - ".github/workflows/ch2.yml"
+      - ".github/workflows/_chapter-tests.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "ch2_rl_formulation/**"
+      - ".github/workflows/ch2.yml"
+      - ".github/workflows/_chapter-tests.yml"
+
+jobs:
+  call:
+    uses: ./.github/workflows/_chapter-tests.yml
+    with:
+      chapter: ch2_rl_formulation

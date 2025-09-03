@@ -1,0 +1,21 @@
+name: ch3 tests
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "ch3_multi_armed_bandits/**"
+      - ".github/workflows/ch3.yml"
+      - ".github/workflows/_chapter-tests.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "ch3_multi_armed_bandits/**"
+      - ".github/workflows/ch3.yml"
+      - ".github/workflows/_chapter-tests.yml"
+
+jobs:
+  call:
+    uses: ./.github/workflows/_chapter-tests.yml
+    with:
+      chapter: ch3_multi_armed_bandits

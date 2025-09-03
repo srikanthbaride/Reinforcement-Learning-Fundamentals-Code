@@ -1,0 +1,21 @@
+name: ch5 tests
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "ch5_monte_carlo/**"
+      - ".github/workflows/ch5.yml"
+      - ".github/workflows/_chapter-tests.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "ch5_monte_carlo/**"
+      - ".github/workflows/ch5.yml"
+      - ".github/workflows/_chapter-tests.yml"
+
+jobs:
+  call:
+    uses: ./.github/workflows/_chapter-tests.yml
+    with:
+      chapter: ch5_monte_carlo

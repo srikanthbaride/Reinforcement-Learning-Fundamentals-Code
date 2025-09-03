@@ -1,0 +1,21 @@
+name: ch4 tests
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "ch4_dynamic_programming/**"
+      - ".github/workflows/ch4.yml"
+      - ".github/workflows/_chapter-tests.yml"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "ch4_dynamic_programming/**"
+      - ".github/workflows/ch4.yml"
+      - ".github/workflows/_chapter-tests.yml"
+
+jobs:
+  call:
+    uses: ./.github/workflows/_chapter-tests.yml
+    with:
+      chapter: ch4_dynamic_programming
