@@ -37,7 +37,7 @@ class GridWorld4x4:
         for s_idx, (i, j) in enumerate(self.S):
             for a_idx, (di, dj) in enumerate(ACTIONS):
                 if s_idx == g_idx:
-                    # absorbing terminal
+                    # Absorbing terminal: stay with zero reward
                     P[s_idx, a_idx, s_idx] = 1.0
                     R[s_idx, a_idx, s_idx] = 0.0
                     continue
@@ -48,8 +48,11 @@ class GridWorld4x4:
 
                 sp_idx = self.s2i[(ni, nj)]
                 P[s_idx, a_idx, sp_idx] = 1.0
-                if (ni, nj) == self.goal:
-                    R[s_idx, a_idx, sp_idx] = 0.0  # no penalty entering goal
+
+                # KEY CHANGE: entering goal still incurs step cost (-1),
+                # only staying-in-goal self-loop has 0 reward.
+                # So do NOT overwrite R[...] = 0.0 here.
+                # R already has step_reward by default.
         return P, R
 
     # -------- environment API (used by ch5 as well) --------
