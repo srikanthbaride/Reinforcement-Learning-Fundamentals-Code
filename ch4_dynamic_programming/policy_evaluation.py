@@ -1,23 +1,32 @@
-﻿from __future__ import annotations
+﻿# ch4_dynamic_programming/policy_evaluation.py
 import numpy as np
 
-def policy_evaluation(P: np.ndarray, R: np.ndarray, pi: np.ndarray,
-                      gamma: float = 1.0, theta: float = 1e-8, max_sweeps: int = 10_000) -> np.ndarray:
-    '''Iterative policy evaluation (Bellman expectation updates).'''
-    nS, nA, _ = P.shape
-    V = np.zeros(nS, dtype=float)
-    for _ in range(max_sweeps):
+def policy_evaluation(env, pi: np.ndarray, theta: float = 1e-8, max_iter: int = 10000):
+    """
+    Iterative policy evaluation for a given stationary (possibly stochastic) π.
+
+    Args:
+        env: GridWorld4x4 (must provide P, R, gamma, S, A)
+        pi:  (S,A) array, rows sum to 1
+    Returns:
+        V: (S,) state-value under π
+    """
+    S, A = len(env.S), len(env.A)
+    V = np.zeros(S, dtype=float)
+    gamma = env.gamma
+
+    for _ in range(max_iter):
         delta = 0.0
-        for s in range(nS):
-            v_old = V[s]
-            q = 0.0
-            for a in range(nA):
-                if pi[s, a] == 0.0:
+        for s in range(S):
+            # v(s) = Σ_a π(a|s) Σ_s' P(s,a,s') [ R + γ V(s') ]
+            v_new = 0.0
+            for a in range(A):
+                pa = pi[s, a]
+                if pa == 0.0:
                     continue
-                q += pi[s, a] * np.sum(P[s, a] * (R[s, a] + gamma * V))
-            V[s] = q
-            delta = max(delta, abs(v_old - V[s]))
+                v_new += pa * (env.P[s, a] * (env.R[s, a] + gamma * V)).sum()
+            delta = max(delta, abs(v_new - V[s]))
+            V[s] = v_new
         if delta < theta:
             break
     return V
-

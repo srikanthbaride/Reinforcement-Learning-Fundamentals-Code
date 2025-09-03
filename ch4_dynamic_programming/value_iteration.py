@@ -1,27 +1,31 @@
-﻿from __future__ import annotations
+﻿# ch4_dynamic_programming/value_iteration.py
 import numpy as np
+from .utils import greedy_from_q
 
-def value_iteration(P: np.ndarray, R: np.ndarray, gamma: float = 1.0, theta: float = 1e-8,
-                    max_sweeps: int = 10_000) -> tuple[np.ndarray, np.ndarray, int]:
-    '''Value Iteration via the Bellman optimality operator. Returns (pi_star, V_star, num_sweeps).'''
-    nS, nA, _ = P.shape
-    V = np.zeros(nS, dtype=float)
-    sweeps = 0
-    for k in range(max_sweeps):
-        sweeps = k + 1
+def value_iteration(env, theta: float = 1e-8, max_iter: int = 10000):
+    """
+    Value iteration with max backup. Returns optimal V and greedy π.
+    """
+    S, A = len(env.S), len(env.A)
+    gamma = env.gamma
+    V = np.zeros(S, dtype=float)
+
+    for _ in range(max_iter):
         delta = 0.0
-        for s in range(nS):
-            v_old = V[s]
-            q_vals = [np.sum(P[s, a] * (R[s, a] + gamma * V)) for a in range(nA)]
-            V[s] = max(q_vals)
-            delta = max(delta, abs(v_old - V[s]))
+        for s in range(S):
+            q = np.zeros(A, dtype=float)
+            for a in range(A):
+                q[a] = (env.P[s, a] * (env.R[s, a] + gamma * V)).sum()
+            v_new = np.max(q)
+            delta = max(delta, abs(v_new - V[s]))
+            V[s] = v_new
         if delta < theta:
             break
-    # Greedy policy extraction
-    pi = np.zeros((nS, nA), dtype=float)
-    for s in range(nS):
-        q_vals = [np.sum(P[s, a] * (R[s, a] + gamma * V)) for a in range(nA)]
-        a_star = int(np.argmax(q_vals))
-        pi[s, a_star] = 1.0
-    return pi, V, sweeps
 
+    # derive greedy policy
+    Q = np.zeros((S, A), dtype=float)
+    for s in range(S):
+        for a in range(A):
+            Q[s, a] = (env.P[s, a] * (env.R[s, a] + gamma * V)).sum()
+    pi = greedy_from_q(Q)
+    return V, pi
