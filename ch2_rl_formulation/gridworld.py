@@ -1,57 +1,66 @@
-﻿from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict, Tuple, List
+﻿# ch2_rl_formulation/gridworld.py
+
 import numpy as np
 
-ACTIONS: List[Tuple[int, int]] = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U
-
-@dataclass(frozen=True)
-class Transition:
-    s: int
-    a: int
-    sp: int
-    r: float
-    p: float
+ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U
 
 class GridWorld4x4:
-    """Deterministic 4x4 gridworld with an absorbing goal (reward 0)."""
-    def __init__(self, step_reward: float = -1.0, goal: Tuple[int, int] = (0, 3)):
+    def __init__(self, step_reward: float = -1.0, goal=(0, 3)):
         self.n = 4
-        self.step_reward = float(step_reward)
         self.goal = tuple(goal)
+        self.step_reward = float(step_reward)
 
         self.S = [(i, j) for i in range(self.n) for j in range(self.n)]
-        self.s2i = {s: k for k, s in enumerate(self.S)}  # (i,j) -> idx
-        self.i2s = {k: s for k, s in enumerate(self.S)}  # idx   -> (i,j)
+        self.s2i = {s: k for k, s in enumerate(self.S)}
+        self.i2s = {k: s for s, k in self.s2i.items()}
         self.A = list(range(len(ACTIONS)))
 
-        self.terminal = self.s2i[self.goal]
-        self.num_states = len(self.S)
-        self.num_actions = len(self.A)
+        # P[s][a] = list of (prob, s', r, done)
+        self.P = {s: {a: [] for a in self.A} for s in self.S}
+        self._build_PR()
 
-        self.P: Dict[int, Dict[int, List[Transition]]] = self._build_P()
-
-    def _in_bounds(self, i: int, j: int) -> bool:
+    def _in_bounds(self, i, j):
         return 0 <= i < self.n and 0 <= j < self.n
 
-    def _step_det(self, s_idx: int, a: int) -> Tuple[int, float]:
-        if s_idx == self.terminal:
-            return s_idx, 0.0  # absorbing
-        i, j = self.i2s[s_idx]
+    def _next_state(self, s, a):
         di, dj = ACTIONS[a]
+        i, j = s
         ni, nj = i + di, j + dj
         if not self._in_bounds(ni, nj):
-            ni, nj = i, j  # bounce to self
-        sp_idx = self.s2i[(ni, nj)]
-        r = 0.0 if sp_idx == self.terminal else self.step_reward
-        return sp_idx, r
+            # Hitting the boundary keeps you in place
+            return (i, j)
+        return (ni, nj)
 
-    def _build_P(self) -> Dict[int, Dict[int, List[Transition]]]:
-        P: Dict[int, Dict[int, List[Transition]]] = {}
-        for s in range(self.num_states):
-            P[s] = {}
+    def _build_PR(self):
+        """
+        Textbook convention:
+        - Every attempted move costs step_reward (e.g., -1), INCLUDING the final
+          move that ENTERS the goal.
+        - The goal is absorbing: once at goal, any action yields (goal, 0, done=True).
+        """
+        goal = self.goal
+
+        for s in self.S:
+            if s == goal:
+                # Absorbing terminal: staying has zero reward; no further step costs here.
+                for a in self.A:
+                    self.P[s][a] = [(1.0, goal, 0.0, True)]
+                continue
+
             for a in self.A:
-                sp, r = self._step_det(s, a)
-                P[s][a] = [Transition(s=s, a=a, sp=sp, r=r, p=1.0)]
-        return P
+                s_next = self._next_state(s, a)
+                done = (s_next == goal)
 
+                # IMPORTANT: charge step cost for the transition, even if it enters terminal
+                reward = self.step_reward
+
+                self.P[s][a] = [(1.0, s_next, reward, done)]
+
+    # Optional helper if you simulate step-by-step
+    def step(self, s, a):
+        """ Stochastic step following P; returns (s_next, reward, done). """
+        trans = self.P[s][a]
+        probs = [p for p, _, _, _ in trans]
+        idx = np.random.choice(len(trans), p=probs)
+        _, s_next, r, done = trans[idx]
+        return s_next, r, done
