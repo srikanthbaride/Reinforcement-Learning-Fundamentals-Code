@@ -8,7 +8,7 @@
 
 ---
 
-This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Explained: From Theory to Practice*.  
+This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Explained*.  
 It provides clean, minimal, and well-tested implementations of key reinforcement learning concepts.
 
 ---
