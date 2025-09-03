@@ -1,4 +1,5 @@
 name: ch4 tests
+
 on:
   push:
     branches: [ "main" ]
@@ -6,12 +7,14 @@ on:
       - "ch4_dynamic_programming/**"
       - ".github/workflows/ch4.yml"
       - ".github/workflows/_chapter-tests.yml"
+      - "requirements.txt"
   pull_request:
     branches: [ "main" ]
     paths:
       - "ch4_dynamic_programming/**"
       - ".github/workflows/ch4.yml"
       - ".github/workflows/_chapter-tests.yml"
+      - "requirements.txt"
 
 jobs:
   call:

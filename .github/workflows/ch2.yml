@@ -1,4 +1,5 @@
 name: ch2 tests
+
 on:
   push:
     branches: [ "main" ]
@@ -6,12 +7,14 @@ on:
       - "ch2_rl_formulation/**"
       - ".github/workflows/ch2.yml"
       - ".github/workflows/_chapter-tests.yml"
+      - "requirements.txt"
   pull_request:
     branches: [ "main" ]
     paths:
       - "ch2_rl_formulation/**"
       - ".github/workflows/ch2.yml"
       - ".github/workflows/_chapter-tests.yml"
+      - "requirements.txt"
 
 jobs:
   call:

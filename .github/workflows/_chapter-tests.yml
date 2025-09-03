@@ -1,47 +1,37 @@
-name: _chapter-tests
+name: chapter tests (reusable)
 
 on:
   workflow_call:
     inputs:
       chapter:
+        description: "Folder name of the chapter (e.g., ch2_rl_formulation)"
         required: true
         type: string
 
 jobs:
   test:
+    name: ${{ inputs.chapter }} (py${{ matrix.python }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-    env:
-      MPLBACKEND: Agg
-      PYTHONDONTWRITEBYTECODE: 1
-      PYTHONPATH: ${{ github.workspace }}
+        python: ["3.10", "3.11", "3.12"]
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
+          cache: "pip"
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+      - name: Upgrade pip
+        run: python -m pip install -U pip
 
-      - name: Install dependencies (requirements.txt if present) 
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          # Fallback to guarantee core deps exist for tests
-          pip install --upgrade --upgrade-strategy eager numpy matplotlib pytest
+      - name: Install dependencies (root requirements.txt)
+        run: pip install -r requirements.txt
 
       - name: Show environment
         run: |
@@ -51,4 +41,4 @@ jobs:
       - name: Run tests
         run: |
           echo "Running pytest in ${{ inputs.chapter }}/tests"
-          python -m pytest -q ${{ inputs.chapter }}/tests
+          pytest -q ${{ inputs.chapter }}/tests
