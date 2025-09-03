@@ -1,14 +1,13 @@
 ﻿# ch5_monte_carlo/examples/mc_control_onpolicy_gridworld.py
-# On-policy MC control with ε-greedy behavior/target policy.
-# Normalizes env.P to triples so tests can sample (p, sp, r) from env.P[s][a].
-# Returns an ε-soft dict policy keyed by (state_tuple, action_index).
+# On-policy MC control with ε-greedy behavior/target.
+# Normalizes env.P to [(p, sp_idx, r)] triples; returns ε-soft dict policy keyed by (state_tuple, action_index).
 
 from __future__ import annotations
 import numpy as np
 
 __all__ = ["mc_control_onpolicy", "ACTIONS", "generate_episode_onpolicy"]
 
-ACTIONS     = [0, 1, 2, 3]                          # action indices (test expects ints)
+ACTIONS     = [0, 1, 2, 3]                          # action indices (tests index env.P[s][a])
 DIRECTIONS  = [(0, 1), (0, -1), (1, 0), (-1, 0)]    # R, L, D, U (geometry)
 
 def _goal(env): return getattr(env, "goal", (0, 3))
@@ -30,7 +29,7 @@ def _step_geom(env, s, a_idx: int):
     if not (0 <= ni < n and 0 <= nj < n):
         ni, nj = i, j
     sp = (ni, nj)
-    r = 0.0 if sp == _goal(env) else _sr(env)
+    r = 1.0 if sp == _goal(env) else _sr(env)  # KEY: +1 on entering goal
     return sp, r
 
 def _step(env, s, a_idx: int):

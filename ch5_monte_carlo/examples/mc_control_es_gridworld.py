@@ -1,13 +1,13 @@
 ﻿# ch5_monte_carlo/examples/mc_control_es_gridworld.py
 # Monte Carlo control with Exploring Starts (ES) on a 4x4 GridWorld.
-# Robust: does not rely on original env.P shape; normalizes env.P to list-of-3-tuples.
+# Robust: no reliance on original env.P shape; we normalize env.P to [(p, sp_idx, r)] triples.
 
 from __future__ import annotations
 import numpy as np
 
 __all__ = ["mc_es_control", "generate_episode_es", "ACTIONS"]
 
-# Tests expect actions as integer indices (for env.P[s][a] lookup)
+# Tests expect actions as integer indices (for env.P[s_idx][a] lookup)
 ACTIONS     = [0, 1, 2, 3]                          # exported for tests
 DIRECTIONS  = [(0, 1), (0, -1), (1, 0), (-1, 0)]    # R, L, D, U (internal geometry)
 
@@ -24,7 +24,7 @@ def _is_terminal(env, s) -> bool:
     return st == _goal(env)
 
 def _step_geom(env, s, a_idx: int):
-    """Geometry fallback; used for building deterministic transitions."""
+    """Deterministic geometry step; reward = +1 on entering goal, else step_reward."""
     st = s if isinstance(s, tuple) else env.i2s[int(s)]
     i, j = st
     di, dj = DIRECTIONS[a_idx]
@@ -33,11 +33,10 @@ def _step_geom(env, s, a_idx: int):
     if not (0 <= ni < n and 0 <= nj < n):
         ni, nj = i, j
     sp = (ni, nj)
-    r = 0.0 if sp == _goal(env) else _sr(env)
+    r = 1.0 if sp == _goal(env) else _sr(env)  # KEY: +1 on entering goal
     return sp, r
 
 def _step(env, s, a_idx: int):
-    """Use env.step if available; else geometry."""
     if hasattr(env, "step"):
         return env.step(s, a_idx)
     return _step_geom(env, s, a_idx)
@@ -47,10 +46,9 @@ def _greedy_action(q_row: np.ndarray) -> int:
 
 def _ensure_triple_envP(env):
     """
-    Normalize env.P to a list-of-lists of lists of triples:
+    Normalize env.P to list-of-lists of lists of triples:
       env.P[s_idx][a_idx] == [ (1.0, sp_idx, r) ]
-    Deterministic transitions built via geometry. This satisfies tests that
-    iterate 'for (p, sp, r) in env.P[s][a]'.
+    Deterministic transitions built via geometry.
     """
     S, A = len(env.S), len(env.A)
     P_list = [[None for _ in range(A)] for _ in range(S)]
@@ -126,6 +124,6 @@ def mc_es_control(env, episodes: int = 1500, gamma: float | None = None, seed: i
             N[s_idx, a] += 1.0
             Q[s_idx, a] += (G - Q[s_idx, a]) / N[s_idx, a]
 
-    pi = np.zeros((S, A), dtype=float)
-    pi[np.arange(S), np.argmax(Q, axis=1)] = 1.0
-    return Q, pi
+    # Return a dict policy: state tuple -> greedy action index (tests do: a = pi[s])
+    pi_dict = {s: int(np.argmax(Q[s_idx])) for s_idx, s in enumerate(env.S)}
+    return Q, pi_dict
