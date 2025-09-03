@@ -1,4 +1,4 @@
-﻿# Reinforcement Learning Explained â€” Companion Code
+﻿# Reinforcement Learning Explained — Companion Code
 
 ## Build Status
 [![ch2](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code/actions/workflows/ch2.yml)
@@ -13,78 +13,77 @@ It provides clean, minimal, and well-tested implementations of key reinforcement
 
 ---
 
-## ðŸ“‚ Chapter Navigation
+## 📑 Chapter Navigation
 - [Chapter 2: The RL Problem Formulation](./ch2_rl_formulation)
 - [Chapter 3: Multi-Armed Bandits](./ch3_multi_armed_bandits)
 - [Chapter 4: Dynamic Programming Approaches](./ch4_dynamic_programming)
 - [Chapter 5: Monte Carlo Methods](./ch5_monte_carlo)
 
-
 ---
 
-## ðŸ“Š Chapter Progress
+## 📊 Chapter Progress
 
 | Chapter | Title                          | Status        | Notes                                               |
 |---------|--------------------------------|---------------|-----------------------------------------------------|
-| 1       | Introduction                   | âœ”ï¸ Complete   | Book only (no code needed)                          |
-| 2       | The RL Problem Formulation     | âœ”ï¸ Complete   | GridWorld, evaluation, policies, examples           |
-| 3       | Multi-Armed Bandits            | âœ”ï¸ Complete   | Bandit envs, Îµ-greedy, UCB, Thompson                |
-| 4       | Dynamic Programming Approaches | âœ”ï¸ Complete   | Policy Iteration, Value Iteration                   |
-| 5       | Monte Carlo Methods            | â³ In Progress| Prediction, Control, On/Off-Policy done; refining   |
-| 6+      | Temporal-Difference & Beyond   | âŒ Not Yet    | To be implemented in upcoming chapters              |
+| 1       | Introduction                   | ✅ Complete    | Book only (no code needed)                          |
+| 2       | The RL Problem Formulation     | ✅ Complete    | GridWorld, evaluation, policies, examples           |
+| 3       | Multi-Armed Bandits            | ✅ Complete    | Bandit envs, ε-greedy, UCB, Thompson                |
+| 4       | Dynamic Programming Approaches | ✅ Complete    | Policy Iteration, Value Iteration                   |
+| 5       | Monte Carlo Methods            | ⏳ In Progress | Prediction, Control, On/Off-Policy done; refining   |
+| 6+      | Temporal-Difference & Beyond   | ❌ Not Yet     | To be implemented in upcoming chapters              |
 
 ---
 
-## ðŸ“‚ Repository Structure
+## 📂 Repository Structure
 
 ```
-rl-fundamentals-code/
-â”œâ”€ ch2_rl_formulation/              # Chapter 2: The RL Problem Formulation
-â”‚  â”œâ”€ gridworld.py                  # 4x4 GridWorld MDP (tabular P,R builder)
-â”‚  â”œâ”€ evaluation.py                 # Policy evaluation, q_from_v(), greedy_from_q()
-â”‚  â”œâ”€ policies.py                   # Deterministic & Îµ-greedy policies
-â”‚  â”œâ”€ value_iteration.py            # Bellman optimality, value iteration
-â”‚  â”œâ”€ examples/                     # Numeric examples, GridWorld demo, plotting
-â”‚  â””â”€ tests/                        # Pytest-based checks for chapter numbers
-â”‚
-â”œâ”€ ch3_multi_armed_bandits/         # Chapter 3: Multi-Armed Bandits
-â”‚  â”œâ”€ bandits.py                    # Bernoulli & Gaussian bandit environments
-â”‚  â”œâ”€ epsilon_greedy.py             # Sample-average Îµ-greedy agent
-â”‚  â”œâ”€ ucb.py                        # UCB1 agent
-â”‚  â”œâ”€ thompson.py                   # Thompson Sampling (Betaâ€“Bernoulli)
-â”‚  â”œâ”€ experiments.py                # Run algorithms, generate regret plots
-â”‚  â”œâ”€ plots/                        # Saved figures
-â”‚  â””â”€ tests/                        # Regression tests (ordering, sublinear regret)
-â”‚
-â”œâ”€ ch4_dynamic_programming/         # Chapter 4: Dynamic Programming Approaches
-â”‚  â”œâ”€ gridworld.py                  # 4x4 deterministic GridWorld
-â”‚  â”œâ”€ policy_evaluation.py          # Iterative policy evaluation
-â”‚  â”œâ”€ policy_iteration.py           # Howardâ€™s policy iteration
-â”‚  â”œâ”€ value_iteration.py            # Bellman optimality (value iteration)
-â”‚  â”œâ”€ utils.py                      # Random + greedy helpers
-â”‚  â”œâ”€ examples/                     # Run PI/VI demos
-â”‚  â””â”€ tests/                        # Pytest checks for DP convergence
-â”‚
-â”œâ”€ ch5_monte_carlo/                 # Chapter 5: Monte Carlo Methods
-â”‚  â”œâ”€ examples/
-â”‚  â”‚   â”œâ”€ mc_prediction_demo.py           # First-visit vs every-visit MC (two-state MDP)
-â”‚  â”‚   â”œâ”€ mc_control_es_gridworld.py      # MC control with Exploring Starts
-â”‚  â”‚   â”œâ”€ mc_control_onpolicy_gridworld.py# On-policy MC control with Îµ-soft policies
-â”‚  â”‚   â””â”€ mc_offpolicy_is_demo.py         # Off-policy IS: ordinary vs weighted
-â”‚  â””â”€ tests/
-â”‚      â”œâ”€ test_mc_control.py              # GridWorld control tests (MC-ES & on-policy)
-â”‚      â””â”€ test_offpolicy_is.py            # Off-policy IS variance checks
-â”‚
-â”œâ”€ utils/                           # Shared helper utilities (future use)
-â”œâ”€ .github/workflows/               # CI: runs pytest on every push/PR
-â”‚  â””â”€ python-tests.yml
-â”œâ”€ requirements.txt                 # Global dependencies
-â””â”€ README.md                        # Project overview + usage
+rl-explained-code/
+├─ ch2_rl_formulation/              # Chapter 2: The RL Problem Formulation
+│  ├─ gridworld.py                  # 4x4 GridWorld MDP (tabular P,R builder)
+│  ├─ evaluation.py                 # Policy evaluation, q_from_v(), greedy_from_q()
+│  ├─ policies.py                   # Deterministic & ε-greedy policies
+│  ├─ value_iteration.py            # Bellman optimality, value iteration
+│  ├─ examples/                     # Numeric examples, GridWorld demo, plotting
+│  └─ tests/                        # Pytest-based checks for chapter numbers
+│
+├─ ch3_multi_armed_bandits/         # Chapter 3: Multi-Armed Bandits
+│  ├─ bandits.py                    # Bernoulli & Gaussian bandit environments
+│  ├─ epsilon_greedy.py             # Sample-average ε-greedy agent
+│  ├─ ucb.py                        # UCB1 agent
+│  ├─ thompson.py                   # Thompson Sampling (Beta–Bernoulli)
+│  ├─ experiments.py                # Run algorithms, generate regret plots
+│  ├─ plots/                        # Saved figures
+│  └─ tests/                        # Regression tests (ordering, sublinear regret)
+│
+├─ ch4_dynamic_programming/         # Chapter 4: Dynamic Programming Approaches
+│  ├─ gridworld.py                  # 4x4 deterministic GridWorld
+│  ├─ policy_evaluation.py          # Iterative policy evaluation
+│  ├─ policy_iteration.py           # Howard’s policy iteration
+│  ├─ value_iteration.py            # Bellman optimality (value iteration)
+│  ├─ utils.py                      # Random + greedy helpers
+│  ├─ examples/                     # Run PI/VI demos
+│  └─ tests/                        # Pytest checks for DP convergence
+│
+├─ ch5_monte_carlo/                 # Chapter 5: Monte Carlo Methods
+│  ├─ examples/
+│  │   ├─ mc_prediction_demo.py           # First-visit vs every-visit MC (two-state MDP)
+│  │   ├─ mc_control_es_gridworld.py      # MC control with Exploring Starts
+│  │   ├─ mc_control_onpolicy_gridworld.py# On-policy MC control with ε-soft policies
+│  │   └─ mc_offpolicy_is_demo.py         # Off-policy IS: ordinary vs weighted
+│  └─ tests/
+│      ├─ test_mc_control.py              # GridWorld control tests (MC-ES & on-policy)
+│      └─ test_offpolicy_is.py            # Off-policy IS variance checks
+│
+├─ utils/                           # Shared helper utilities (future use)
+├─ .github/workflows/               # CI: runs pytest on every push/PR
+│  └─ python-tests.yml
+├─ requirements.txt                 # Global dependencies
+└─ README.md                        # Project overview + usage
 ```
 
 ---
 
-## ðŸš€ Getting Started
+## 🚀 Getting Started
 
 Clone this repository:
 
@@ -109,7 +108,7 @@ pip install -r requirements.txt
 
 ---
 
-## âœ… Running Tests
+## ✅ Running Tests
 
 To run all tests:
 
@@ -143,7 +142,7 @@ python -m pytest -q ch5_monte_carlo/tests
 
 ---
 
-## ðŸ§ª Examples
+## 🧪 Examples
 
 Run numeric checks for Chapter 2:
 
@@ -181,7 +180,7 @@ Run MC control with Exploring Starts (Chapter 5):
 python -m ch5_monte_carlo.examples.mc_control_es_gridworld
 ```
 
-Run on-policy MC control with Îµ-soft policies (Chapter 5):
+Run on-policy MC control with ε-soft policies (Chapter 5):
 
 ```bash
 python -m ch5_monte_carlo.examples.mc_control_onpolicy_gridworld
@@ -195,23 +194,23 @@ python -m ch5_monte_carlo.examples.mc_offpolicy_is_demo
 
 ---
 
-## âš™ï¸ Continuous Integration
+## ⚙️ Continuous Integration
 
-- GitHub Actions (`.github/workflows/python-tests.yml`) automatically run tests for all chapters on every push and pull request.
+- GitHub Actions (`.github/workflows/*.yml`) automatically run tests for each chapter on every push and pull request.
 - This ensures correctness and reproducibility of the examples.
 
 ---
 
-## ðŸ“š How to Cite
+## 📚 How to Cite
 
 If you use this code or the accompanying book in your research or teaching, please cite:
 
 **Book (forthcoming):**
 ```bibtex
-@book{baride2025rlfundamentals,
+@book{baride2025rlexplained,
   author    = {Srikanth Baride},
   title     = {Reinforcement Learning Explained},
-  publisher = {yet to decide},
+  publisher = {To be decided},
   year      = {2025},
   note      = {In preparation}
 }
@@ -221,7 +220,7 @@ If you use this code or the accompanying book in your research or teaching, plea
 ```bibtex
 @misc{baride2025rlcode,
   author       = {Srikanth Baride},
-  title        = {Reinforcement Learning Explained â€” Companion Code},
+  title        = {Reinforcement Learning Explained — Companion Code},
   year         = {2025},
   howpublished = {\url{https://github.com/srikanthbaride/Reinforcement-Learning-Explained-Code}},
   note         = {Accessed: YYYY-MM-DD}
@@ -230,7 +229,7 @@ If you use this code or the accompanying book in your research or teaching, plea
 
 ---
 
-## ðŸ¤ Contributing
+## 🤝 Contributing
 
 Contributions are welcome! To contribute:
 
@@ -260,12 +259,11 @@ Contributions are welcome! To contribute:
 
 For issues, please use the GitHub **Issues tab** and provide:  
 - A clear description of the problem.  
-- Steps to reproduce (if itâ€™s a bug).  
+- Steps to reproduce (if it’s a bug).  
 - Suggested fix or clarification request (if possible).  
 
 ---
 
-## ðŸ“– License
+## 📖 License
 
-MIT License Â© 2025 â€” Srikanth Baride
-
+MIT License © 2025 — Srikanth Baride
