@@ -55,14 +55,19 @@ class GridWorld4x4:
                 # R already has step_reward by default.
         return P, R
 
-    # -------- environment API (used by ch5 as well) --------
+    # --- public API used by ch5 (MC) ---
+
     def is_terminal(self, s):
-        return tuple(s) == self.goal
+        """Return True iff state s is the goal (works with tuple or index)."""
+        if isinstance(s, tuple):
+            return s == self.goal
+        # s given as index
+        return self.i2s[int(s)] == self.goal
 
     def step(self, s, a):
-        """Given state (tuple or index) and action index -> (next_state_tuple, reward)."""
+        """Take action a in state s (tuple or index). Returns (next_state_tuple, reward)."""
         s_idx = self.s2i[s] if isinstance(s, tuple) else int(s)
         probs = self.P[s_idx, a]
-        sp_idx = int(np.argmax(probs))  # deterministic
+        sp_idx = int(np.argmax(probs))  # deterministic env
         r = float(self.R[s_idx, a, sp_idx])
         return self.i2s[sp_idx], r
