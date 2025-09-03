@@ -12,20 +12,26 @@ def _is_terminal(env: GridWorld4x4, s) -> bool:
     return st == env.goal
 
 def _step(env: GridWorld4x4, s, a):
+    """Robust step that does NOT depend on env.P; uses geometry."""
     if hasattr(env, "step"):
         return env.step(s, a)
-    s_idx = env.s2i[s] if isinstance(s, tuple) else int(s)
-    probs = env.P[s_idx, a]
-    sp_idx = int(np.argmax(probs))
-    r = float(env.R[s_idx, a, sp_idx])
-    return env.i2s[sp_idx], r
+    st = s if isinstance(s, tuple) else env.i2s[int(s)]
+    i, j = st
+    di, dj = ACTIONS[a]
+    n = getattr(env, "n", int(round(len(env.S) ** 0.5)))
+    ni, nj = i + di, j + dj
+    if not (0 <= ni < n and 0 <= nj < n):
+        ni, nj = i, j
+    sp = (ni, nj)
+    step_reward = float(getattr(env, "step_reward", -1.0))
+    r = 0.0 if sp == getattr(env, "goal", (0, 3)) else step_reward
+    return sp, r
 
 def _epsilon_greedy(q_row: np.ndarray, epsilon: float, rng: np.random.Generator) -> int:
     return int(rng.integers(len(q_row))) if rng.random() < epsilon else int(np.argmax(q_row))
 
 def generate_episode_onpolicy(env: GridWorld4x4, Q: np.ndarray, epsilon: float,
                               rng: np.random.Generator, max_steps: int = 10000):
-    """Start from a random non-terminal state; follow ε-greedy w.r.t. Q."""
     non_terminal = [s for s in env.S if not _is_terminal(env, s)]
     s = non_terminal[rng.integers(len(non_terminal))]
 
@@ -40,7 +46,6 @@ def generate_episode_onpolicy(env: GridWorld4x4, Q: np.ndarray, epsilon: float,
         states.append(s)
         steps += 1
 
-    # first-visit returns
     gamma = float(getattr(env, "gamma", 1.0))
     G = 0.0
     returns = np.zeros(len(actions), dtype=float)
@@ -52,12 +57,6 @@ def generate_episode_onpolicy(env: GridWorld4x4, Q: np.ndarray, epsilon: float,
 def mc_control_onpolicy(env: GridWorld4x4, episodes: int = 5000,
                         epsilon: float = 0.1, gamma: float | None = None,
                         seed: int | None = None):
-    """
-    On-policy MC control using ε-greedy behavior/target policy (no ES).
-    Returns:
-        Q:  (S,A)
-        pi: (S,A) deterministic greedy policy
-    """
     rng = np.random.default_rng(seed)
     S, A = len(env.S), len(env.A)
     if gamma is None:
@@ -71,10 +70,9 @@ def mc_control_onpolicy(env: GridWorld4x4, episodes: int = 5000,
         seen = set()
         for t, (s, a) in enumerate(zip(states, actions)):
             s_idx = env.s2i[s]
-            key = (s_idx, a)
-            if key in seen:
+            if (s_idx, a) in seen:
                 continue
-            seen.add(key)
+            seen.add((s_idx, a))
             G = returns[t]
             N[s_idx, a] += 1.0
             alpha = 1.0 / N[s_idx, a]
