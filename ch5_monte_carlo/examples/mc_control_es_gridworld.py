@@ -1,26 +1,19 @@
 ﻿# ch5_monte_carlo/examples/mc_control_es_gridworld.py
 # Monte Carlo control with Exploring Starts (ES) on a 4x4 GridWorld.
-# Robust to different GridWorld implementations: does not rely on env.P or env.is_terminal.
+# Robust: no reliance on env.P shape nor env.is_terminal presence.
 
 from __future__ import annotations
 import numpy as np
 
 __all__ = ["mc_es_control", "generate_episode_es", "ACTIONS"]
 
-# Must match the environment's action ordering everywhere in the repo
-ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
+# Tests expect ACTIONS to be action *indices* usable as env.P[s_idx][a] keys.
+ACTIONS   = [0, 1, 2, 3]                      # exported for tests
+DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U (internal geometry)
 
-# ------------ helpers that do not assume specific env attributes -------------
-
-def _goal(env):
-    return getattr(env, "goal", (0, 3))
-
-def _n(env):
-    # prefer env.n; otherwise infer from |S|
-    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
-
-def _step_reward(env):
-    return float(getattr(env, "step_reward", -1.0))
+def _goal(env): return getattr(env, "goal", (0, 3))
+def _n(env):    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
+def _step_reward(env): return float(getattr(env, "step_reward", -1.0))
 
 def _is_terminal(env, s) -> bool:
     if hasattr(env, "is_terminal"):
@@ -28,17 +21,17 @@ def _is_terminal(env, s) -> bool:
     st = s if isinstance(s, tuple) else env.i2s[int(s)]
     return st == _goal(env)
 
-def _step(env, s, a):
-    """Robust step that uses env.step if available; else uses grid geometry."""
+def _step(env, s, a_idx: int):
+    """Use env.step if present; else geometric fallback using DIRECTIONS."""
     if hasattr(env, "step"):
-        return env.step(s, a)
+        return env.step(s, a_idx)
     st = s if isinstance(s, tuple) else env.i2s[int(s)]
     i, j = st
-    di, dj = ACTIONS[a]
+    di, dj = DIRECTIONS[a_idx]
     n = _n(env)
     ni, nj = i + di, j + dj
     if not (0 <= ni < n and 0 <= nj < n):
-        ni, nj = i, j  # wall -> stay
+        ni, nj = i, j
     sp = (ni, nj)
     r = 0.0 if sp == _goal(env) else _step_reward(env)
     return sp, r
@@ -46,27 +39,20 @@ def _step(env, s, a):
 def _greedy_action(q_row: np.ndarray) -> int:
     return int(np.argmax(q_row))
 
-# ------------------------------- core logic ----------------------------------
-
 def generate_episode_es(env, Q: np.ndarray, gamma: float, max_steps: int = 10_000):
     """
-    Exploring starts:
-      - start from a random NON-terminal state
-      - start with a random action
-      - thereafter follow greedy policy w.r.t. Q
-    Returns:
-      states:  list of states (tuples), length T = number of actions
-      actions: list of action indices, length T
-      returns: list/array of returns G_t, length T
+    Exploring starts: start from random non-terminal state & random action,
+    then follow greedy policy w.r.t. Q.
+    Returns aligned (states, actions, returns) of length T = #actions.
     """
     rng = np.random.default_rng()
     non_terminal = [s for s in env.S if not _is_terminal(env, s)]
     s = non_terminal[rng.integers(len(non_terminal))]
-    a = int(rng.integers(len(env.A)))
+    a = int(rng.integers(len(env.A)))  # int action index
 
     states = [s]
     actions = [a]
-    rewards = [0.0]  # align indexing so rewards[t+1] corresponds to action at t
+    rewards = [0.0]  # rewards[t+1] corresponds to action at t
 
     steps = 0
     while not _is_terminal(env, s) and steps < max_steps:
@@ -80,23 +66,17 @@ def generate_episode_es(env, Q: np.ndarray, gamma: float, max_steps: int = 10_00
         actions.append(a)
         steps += 1
 
-    # ---- returns over number of actions (T) ----
+    # Compute returns over T = len(actions); guard rewards indexing just in case.
     T = len(actions)
     G = 0.0
     returns = np.zeros(T, dtype=float)
     for t in range(T - 1, -1, -1):
-        G = rewards[t + 1] + gamma * G
+        r_tp1 = rewards[t + 1] if (t + 1) < len(rewards) else 0.0
+        G = r_tp1 + gamma * G
         returns[t] = G
-    # keep states length consistent with actions/returns
     return states[:T], actions, returns
 
 def mc_es_control(env, episodes: int = 1500, gamma: float | None = None, seed: int | None = None):
-    """
-    On-policy Monte Carlo control with Exploring Starts (ES).
-    Returns:
-        Q:  (S,A) action-value table
-        pi: (S,A) deterministic greedy policy derived from Q
-    """
     if seed is not None:
         np.random.seed(seed)
     if gamma is None:
@@ -113,14 +93,13 @@ def mc_es_control(env, episodes: int = 1500, gamma: float | None = None, seed: i
             s_idx = env.s2i[s]
             key = (s_idx, a)
             if key in seen:
-                continue  # first-visit MC
+                continue
             seen.add(key)
             G = returns[t]
             N[s_idx, a] += 1.0
-            alpha = 1.0 / N[s_idx, a]
-            Q[s_idx, a] += alpha * (G - Q[s_idx, a])
+            Q[s_idx, a] += (G - Q[s_idx, a]) / N[s_idx, a]
 
-    # greedy deterministic policy from Q
+    # deterministic greedy policy over action indices
     pi = np.zeros((S, A), dtype=float)
     pi[np.arange(S), np.argmax(Q, axis=1)] = 1.0
     return Q, pi
