@@ -1,37 +1,53 @@
-﻿import numpy as np
-from ch4_dynamic_programming.gridworld import GridWorld4x4
+﻿# ch5_monte_carlo/examples/mc_control_onpolicy_gridworld.py
+# On-policy Monte Carlo control with ε-greedy behavior/target policy (no ES).
+# Returns an ε-soft policy as a dict keyed by (state_tuple, action_tuple), as required by tests.
+
+from __future__ import annotations
+import numpy as np
 
 __all__ = ["mc_control_onpolicy", "ACTIONS", "generate_episode_onpolicy"]
 
-ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # R, L, D, U
+ACTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
 
-def _is_terminal(env: GridWorld4x4, s) -> bool:
+# ------------ robust helpers (no dependence on env.P or env.is_terminal) ------------
+
+def _goal(env):
+    return getattr(env, "goal", (0, 3))
+
+def _n(env):
+    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
+
+def _step_reward(env):
+    return float(getattr(env, "step_reward", -1.0))
+
+def _is_terminal(env, s) -> bool:
     if hasattr(env, "is_terminal"):
         return bool(env.is_terminal(s))
     st = s if isinstance(s, tuple) else env.i2s[int(s)]
-    return st == env.goal
+    return st == _goal(env)
 
-def _step(env: GridWorld4x4, s, a):
-    """Robust step that does NOT depend on env.P; uses geometry."""
+def _step(env, s, a):
     if hasattr(env, "step"):
         return env.step(s, a)
     st = s if isinstance(s, tuple) else env.i2s[int(s)]
     i, j = st
     di, dj = ACTIONS[a]
-    n = getattr(env, "n", int(round(len(env.S) ** 0.5)))
+    n = _n(env)
     ni, nj = i + di, j + dj
     if not (0 <= ni < n and 0 <= nj < n):
         ni, nj = i, j
     sp = (ni, nj)
-    step_reward = float(getattr(env, "step_reward", -1.0))
-    r = 0.0 if sp == getattr(env, "goal", (0, 3)) else step_reward
+    r = 0.0 if sp == _goal(env) else _step_reward(env)
     return sp, r
 
 def _epsilon_greedy(q_row: np.ndarray, epsilon: float, rng: np.random.Generator) -> int:
     return int(rng.integers(len(q_row))) if rng.random() < epsilon else int(np.argmax(q_row))
 
-def generate_episode_onpolicy(env: GridWorld4x4, Q: np.ndarray, epsilon: float,
-                              rng: np.random.Generator, max_steps: int = 10000):
+# ---------------------------------- core --------------------------------------
+
+def generate_episode_onpolicy(env, Q: np.ndarray, epsilon: float,
+                              rng: np.random.Generator, max_steps: int = 10_000):
+    """Start from a random non-terminal state; follow ε-greedy w.r.t. Q."""
     non_terminal = [s for s in env.S if not _is_terminal(env, s)]
     s = non_terminal[rng.integers(len(non_terminal))]
 
@@ -46,17 +62,25 @@ def generate_episode_onpolicy(env: GridWorld4x4, Q: np.ndarray, epsilon: float,
         states.append(s)
         steps += 1
 
+    # returns over number of actions
     gamma = float(getattr(env, "gamma", 1.0))
+    T = len(actions)
     G = 0.0
-    returns = np.zeros(len(actions), dtype=float)
-    for t in range(len(actions) - 1, -1, -1):
+    returns = np.zeros(T, dtype=float)
+    for t in range(T - 1, -1, -1):
         G = rewards[t + 1] + gamma * G
         returns[t] = G
-    return states[:-1], actions, returns
+    return states[:T], actions, returns
 
-def mc_control_onpolicy(env: GridWorld4x4, episodes: int = 5000,
+def mc_control_onpolicy(env, episodes: int = 5000,
                         epsilon: float = 0.1, gamma: float | None = None,
                         seed: int | None = None):
+    """
+    On-policy MC control using ε-greedy behavior = target policy (ε-soft).
+    Returns:
+        Q:        (S,A) action-value table
+        pi_soft:  dict mapping (state_tuple, action_tuple) -> probability
+    """
     rng = np.random.default_rng(seed)
     S, A = len(env.S), len(env.A)
     if gamma is None:
@@ -70,14 +94,22 @@ def mc_control_onpolicy(env: GridWorld4x4, episodes: int = 5000,
         seen = set()
         for t, (s, a) in enumerate(zip(states, actions)):
             s_idx = env.s2i[s]
-            if (s_idx, a) in seen:
+            key = (s_idx, a)
+            if key in seen:
                 continue
-            seen.add((s_idx, a))
+            seen.add(key)
             G = returns[t]
             N[s_idx, a] += 1.0
             alpha = 1.0 / N[s_idx, a]
             Q[s_idx, a] += alpha * (G - Q[s_idx, a])
 
-    pi = np.zeros((S, A), dtype=float)
-    pi[np.arange(S), np.argmax(Q, axis=1)] = 1.0
-    return Q, pi
+    # Build ε-soft policy as a dict keyed by (state_tuple, action_tuple)
+    pi_soft = {}
+    for s_idx, s in enumerate(env.S):
+        a_star = int(np.argmax(Q[s_idx]))
+        for a_idx, a_tup in enumerate(ACTIONS):
+            prob = (1.0 - epsilon) if a_idx == a_star else 0.0
+            prob += epsilon / A
+            pi_soft[(s, a_tup)] = prob
+
+    return Q, pi_soft
