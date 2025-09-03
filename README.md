@@ -1,25 +1,24 @@
-# Reinforcement Learning Fundamentals — Companion Code
-
-# Reinforcement Learning Fundamentals — Companion Code
+# Reinforcement Learning Explained — Companion Code
 
 ## Build Status
+[![ch2](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml)
+[![ch3](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml)
+[![ch4](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml)
+[![ch5](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml)
 
-[![ch2 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch2.yml)
-[![ch3 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch3.yml)
-[![ch4 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch4.yml)
-[![ch5 tests](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml/badge.svg)](https://github.com/srikanthbaride/Reinforcement-Learning-Fundamentals-Code/actions/workflows/ch5.yml)
+---
 
-This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Fundamentals: From Theory to Practice*.  
+This repository hosts **chapter-wise companion code** for the book *Reinforcement Learning Explained: From Theory to Practice*.  
 It provides clean, minimal, and well-tested implementations of key reinforcement learning concepts.
 
 ---
 
-## 📑 Chapter Navigation
-
+## 📂 Chapter Navigation
 - [Chapter 2: The RL Problem Formulation](./ch2_rl_formulation)
 - [Chapter 3: Multi-Armed Bandits](./ch3_multi_armed_bandits)
 - [Chapter 4: Dynamic Programming Approaches](./ch4_dynamic_programming)
 - [Chapter 5: Monte Carlo Methods](./ch5_monte_carlo)
+
 
 ---
 
