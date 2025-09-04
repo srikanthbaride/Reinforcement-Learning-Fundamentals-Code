@@ -1,9 +1,11 @@
 ﻿# ch5_monte_carlo/tests/test_mc_control.py
 import numpy as np
 
-from ch2_rl_formulation.gridworld import GridWorld4x4
-from ch5_monte_carlo.examples.mc_control_es_gridworld import mc_es_control
+from ch5_monte_carlo.gridworld import GridWorld4x4
 from ch5_monte_carlo.examples.mc_control_onpolicy_gridworld import mc_control_onpolicy, ACTIONS
+from ch5_monte_carlo.examples.mc_control_es_gridworld import mc_es_control
+from ch5_monte_carlo.examples.rollout_utils import rollout_greedy_from_soft, rollout_greedy_es
+
 
 ARROWS = {0: "â†’", 1: "â†", 2: "â†“", 3: "â†‘"}
 

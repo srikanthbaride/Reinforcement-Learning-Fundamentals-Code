@@ -1,129 +1,69 @@
-﻿# ch5_monte_carlo/examples/mc_control_es_gridworld.py
-# Monte Carlo control with Exploring Starts (ES) on a 4x4 GridWorld.
-# Robust: no reliance on original env.P shape; we normalize env.P to [(p, sp_idx, r)] triples.
-
-from __future__ import annotations
 import numpy as np
 
-__all__ = ["mc_es_control", "generate_episode_es", "ACTIONS"]
+def _greedy_policy_from_Q(Q):
+    return np.argmax(Q, axis=1)  # ndarray (nS,)
 
-# Tests expect actions as integer indices (for env.P[s_idx][a] lookup)
-ACTIONS     = [0, 1, 2, 3]                          # exported for tests
-DIRECTIONS  = [(0, 1), (0, -1), (1, 0), (-1, 0)]    # R, L, D, U (internal geometry)
+def _generate_episode_es(env, Q, gamma, max_steps=500):
+    nS, nA = len(env.S), len(env.A)
 
-# ---------------- utilities ----------------
-
-def _goal(env): return getattr(env, "goal", (0, 3))
-def _n(env):    return getattr(env, "n", int(round(len(env.S) ** 0.5)))
-def _sr(env):   return float(getattr(env, "step_reward", -1.0))
-
-def _is_terminal(env, s) -> bool:
-    if hasattr(env, "is_terminal"):
-        return bool(env.is_terminal(s))
-    st = s if isinstance(s, tuple) else env.i2s[int(s)]
-    return st == _goal(env)
-
-def _step_geom(env, s, a_idx: int):
-    """Deterministic geometry step; reward = +1 on entering goal, else step_reward."""
-    st = s if isinstance(s, tuple) else env.i2s[int(s)]
-    i, j = st
-    di, dj = DIRECTIONS[a_idx]
-    n = _n(env)
-    ni, nj = i + di, j + dj
-    if not (0 <= ni < n and 0 <= nj < n):
-        ni, nj = i, j
-    sp = (ni, nj)
-    r = 1.0 if sp == _goal(env) else _sr(env)  # KEY: +1 on entering goal
-    return sp, r
-
-def _step(env, s, a_idx: int):
-    if hasattr(env, "step"):
-        return env.step(s, a_idx)
-    return _step_geom(env, s, a_idx)
-
-def _greedy_action(q_row: np.ndarray) -> int:
-    return int(np.argmax(q_row))
-
-def _ensure_triple_envP(env):
-    """
-    Normalize env.P to list-of-lists of lists of triples:
-      env.P[s_idx][a_idx] == [ (1.0, sp_idx, r) ]
-    Deterministic transitions built via geometry.
-    """
-    S, A = len(env.S), len(env.A)
-    P_list = [[None for _ in range(A)] for _ in range(S)]
-    for s_idx, s in enumerate(env.S):
-        for a_idx in range(A):
-            sp, r = _step_geom(env, s, a_idx)
-            sp_idx = env.s2i[sp]
-            P_list[s_idx][a_idx] = [(1.0, sp_idx, float(r))]
-    env.P = P_list  # in-place normalization
-
-# ---------------- core ES logic ----------------
-
-def generate_episode_es(env, Q: np.ndarray, gamma: float, max_steps: int = 10_000):
-    """
-    Exploring starts: start random non-terminal state & random action,
-    then follow greedy policy w.r.t. Q.
-    Returns (states, actions, returns) aligned to T = number of actions.
-    """
-    rng = np.random.default_rng()
-    non_terminal = [s for s in env.S if not _is_terminal(env, s)]
-    s = non_terminal[rng.integers(len(non_terminal))]
-    a = int(rng.integers(len(env.A)))  # action index
-
-    states = [s]
-    actions = [a]
-    rewards = [0.0]  # rewards[t+1] corresponds to action at t
-
-    steps = 0
-    while not _is_terminal(env, s) and steps < max_steps:
-        sp, r = _step(env, s, a)
-        rewards.append(float(r))
-        s = sp
-        if _is_terminal(env, s):
+    # random non-terminal start
+    while True:
+        s0 = env.S[np.random.randint(nS)]
+        if s0 != env.goal:
             break
-        a = _greedy_action(Q[env.s2i[s]])
-        states.append(s)
-        actions.append(a)
-        steps += 1
+    env._state = s0  # simple env
 
-    # returns over number of actions
-    T = len(actions)
-    G = 0.0
-    returns = np.zeros(T, dtype=float)
-    for t in range(T - 1, -1, -1):
-        r_tp1 = rewards[t + 1] if (t + 1) < len(rewards) else 0.0
-        G = r_tp1 + gamma * G
-        returns[t] = G
-    return states[:T], actions, returns
+    a0 = np.random.randint(nA)  # exploring start
+    traj = []
+    s = s0
 
-def mc_es_control(env, episodes: int = 1500, gamma: float | None = None, seed: int | None = None):
+    sp, r, done = env.step(a0)
+    traj.append((s, a0, r))
+    s = sp
+    if done:
+        return traj
+
+    greedy = _greedy_policy_from_Q(Q)
+    for _ in range(max_steps - 1):
+        a = greedy[env.s2i[s]]
+        sp, r, done = env.step(a)
+        traj.append((s, a, r))
+        s = sp
+        if done:
+            break
+    return traj
+
+def mc_es_control(env, episodes=1500, gamma=0.9, seed=None):
+    """
+    Monte Carlo Control with Exploring Starts (MC-ES).
+    Returns (Q, pi_dict) where:
+      - Q is (nS, nA)
+      - pi_dict[s_tuple] = greedy action index (int)
+    """
     if seed is not None:
         np.random.seed(seed)
-    if gamma is None:
-        gamma = float(getattr(env, "gamma", 1.0))
 
-    # Make env.P match tests' expected structure
-    _ensure_triple_envP(env)
-
-    S, A = len(env.S), len(env.A)
-    Q = np.zeros((S, A), dtype=float)
-    N = np.zeros((S, A), dtype=float)  # first-visit counts
+    nS, nA = len(env.S), len(env.A)
+    Q = np.zeros((nS, nA), dtype=float)
+    returns_sum = np.zeros_like(Q)
+    returns_cnt = np.zeros_like(Q)
 
     for _ in range(episodes):
-        states, actions, returns = generate_episode_es(env, Q, gamma)
-        seen = set()
-        for t, (s, a) in enumerate(zip(states, actions)):
-            s_idx = env.s2i[s]
-            key = (s_idx, a)
-            if key in seen:
-                continue
-            seen.add(key)
-            G = returns[t]
-            N[s_idx, a] += 1.0
-            Q[s_idx, a] += (G - Q[s_idx, a]) / N[s_idx, a]
+        episode = _generate_episode_es(env, Q, gamma)
+        G = 0.0
+        visited = set()
+        for t in reversed(range(len(episode))):
+            s_t, a_t, r_t = episode[t]
+            s_idx = env.s2i[s_t]
+            G = r_t + gamma * G
+            key = (s_idx, a_t)
+            if key not in visited:
+                returns_sum[s_idx, a_t] += G
+                returns_cnt[s_idx, a_t] += 1
+                Q[s_idx, a_t] = returns_sum[s_idx, a_t] / returns_cnt[s_idx, a_t]
+                visited.add(key)
 
-    # Return a dict policy: state tuple -> greedy action index (tests do: a = pi[s])
-    pi_dict = {s: int(np.argmax(Q[s_idx])) for s_idx, s in enumerate(env.S)}
+    greedy = _greedy_policy_from_Q(Q)  # (nS,)
+    # Convert to dict keyed by state tuple
+    pi_dict = {env.i2s[s_idx]: int(greedy[s_idx]) for s_idx in range(nS)}
     return Q, pi_dict
