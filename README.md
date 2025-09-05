@@ -45,7 +45,7 @@ rl-fundamentals-code/
 ├─ ch3_multi_armed_bandits/        # Chapter 3
 ├─ ch4_dynamic_programming/        # Chapter 4
 ├─ ch5_monte_carlo/                # Chapter 5
-├─ ch6_td_learning/                # Chapter 6: TD Learning (TD(0), n-step TD)
+├─ ch6_td_learning/                # Chapter 6: 
 ├─ utils/
 └─ .github/workflows/
 ```
@@ -60,11 +60,6 @@ To run all tests:
 python -m pytest -q
 ```
 
-Run only Chapter 6 tests:
-
-```bash
-python -m pytest -q ch6_td_learning/tests
-```
 
 ---
 
